@@ -1,0 +1,46 @@
+{
+  "episodeKey": "tmdb-31251-s01-e04",
+  "tmdbEpisodeName": "The Birthweek Song",
+  "tmdbEpisodeId": 753565,
+  "runtime": 24,
+  "E1": {
+    "status": 200,
+    "query": "ai_translated=exclude&episode_number=4&foreign_parts_only=exclude&languages=en&parent_tmdb_id=31251&season_number=1",
+    "totalCount": 1
+  },
+  "featureDetailsShape": {
+    "feature_id": "number",
+    "feature_type": "string",
+    "year": "number",
+    "title": "string",
+    "movie_name": "string",
+    "imdb_id": "number",
+    "tmdb_id": "number",
+    "season_number": "number",
+    "episode_number": "number",
+    "parent_imdb_id": "number",
+    "parent_title": "string",
+    "parent_tmdb_id": "number",
+    "parent_feature_id": "number"
+  },
+  "E2": {
+    "status": 200,
+    "query": "ai_translated=exclude&foreign_parts_only=exclude&imdb_id=1607534&languages=en",
+    "totalCount": 1
+  },
+  "E3": {
+    "status": 200,
+    "query": "ai_translated=exclude&foreign_parts_only=exclude&languages=en&tmdb_id=753565",
+    "totalCount": 3
+  },
+  "E4": {
+    "status": 200,
+    "query": "ai_translated=exclude&episode_number=4&foreign_parts_only=exclude&languages=en&parent_imdb_id=1604099&season_number=1",
+    "totalCount": 1
+  },
+  "E5": {
+    "status": 200,
+    "query": "ai_translated=exclude&episode_number=4&foreign_parts_only=exclude&languages=en&query=victorious&season_number=1&type=episode",
+    "totalCount": 9
+  }
+}

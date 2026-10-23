@@ -1,0 +1,75 @@
+{
+  "query": "ai_translated=exclude&episode_number=4&foreign_parts_only=exclude&languages=en&parent_imdb_id=1604099&season_number=1",
+  "total_pages": 1,
+  "total_count": 1,
+  "per_page": 50,
+  "page": 1,
+  "data": [
+    {
+      "id": "3093628",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "3093628",
+        "language": "en",
+        "download_count": 41646,
+        "new_download_count": 2198,
+        "hearing_impaired": false,
+        "hd": true,
+        "fps": 25,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2013-03-05T19:26:46Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "victorious-s01e04-the-birthweek-song-720p-web-dl-aac-h264-surfer",
+        "machine_translated": false,
+        "release": "Victorious.S01E04.The.Birthweek.Song.720p.WEB-DL.AAC.H264-SURFER",
+        "comments": "",
+        "legacy_subtitle_id": 4846123,
+        "legacy_uploader_id": 0,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_4",
+          "rank": "Application Developers"
+        },
+        "feature_details": {
+          "feature_id": 256730,
+          "feature_type": "Episode",
+          "year": 2010,
+          "title": "The Birthweek Song",
+          "movie_name": "Victorious - S01E04  The Birthweek Song",
+          "imdb_id": 1607534,
+          "tmdb_id": 753565,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 1604099,
+          "parent_title": "Victorious",
+          "parent_tmdb_id": 31251,
+          "parent_feature_id": 10525
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/victorious-s01e04-the-birthweek-song-720p-web-dl-aac-h264-surfer",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Victorious",
+            "url": "https://www.opensubtitles.com/en/features/redirect/10525",
+            "img_url": "https://s7.opensubtitles.com/features/5/2/5/10525.jpg"
+          },
+          {
+            "label": "All subtitles for Episode the birthweek song",
+            "url": "https://www.opensubtitles.com/en/features/redirect/256730",
+            "img_url": "https://s2.opensubtitles.com/features/0/3/7/256730.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 3163304,
+            "cd_number": 1,
+            "file_name": "Victorious.S01E04.The.Birthweek.Song.720p.WEB-DL.AAC.H264-SURFER-eng"
+          }
+        ]
+      }
+    }
+  ]
+}

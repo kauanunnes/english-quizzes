@@ -1,0 +1,185 @@
+{
+  "query": "ai_translated=exclude&foreign_parts_only=exclude&languages=en&tmdb_id=753565",
+  "total_pages": 1,
+  "total_count": 3,
+  "per_page": 50,
+  "page": 1,
+  "data": [
+    {
+      "id": "5924879",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "5924879",
+        "language": "en",
+        "download_count": 1869,
+        "new_download_count": 150,
+        "hearing_impaired": false,
+        "hd": true,
+        "fps": 23.976,
+        "votes": 1,
+        "ratings": 7,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2020-10-15T13:19:48Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "a-killer-rising-2020-1080p-webrip-aac2-0-x264-bobdobbs-en",
+        "machine_translated": false,
+        "release": "A.Killer.Rising.2020.1080p.WEBRip.AAC2.0.x264-BobDobbs",
+        "comments": "HI Removed [official subtitles, fixed & corrected]\r\n[work with all HDRip/WEBRip/WEB-DL versions]\r\nPlease don't reupload on OpenSubtitles, Thanks.",
+        "legacy_subtitle_id": 8387599,
+        "legacy_uploader_id": 7671477,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_5",
+          "rank": "Read Only Member"
+        },
+        "feature_details": {
+          "feature_id": 1279793,
+          "feature_type": "Movie",
+          "year": 2020,
+          "title": "A Killer Rising",
+          "movie_name": "2020 - A Killer Rising",
+          "imdb_id": 12452630,
+          "tmdb_id": 753565
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/a-killer-rising-2020-1080p-webrip-aac2-0-x264-bobdobbs-en",
+        "related_links": [
+          {
+            "label": "All subtitles for a killer rising",
+            "url": "https://www.opensubtitles.com/en/movies/a-killer-rising-2020-1080p-webrip-aac2-0-x264-bobdobbs-en",
+            "img_url": "https://s1.opensubtitles.com/features/3/9/7/1279793.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 6936270,
+            "cd_number": 1,
+            "file_name": "A.Killer.Rising.2020.1080p.WEBRip.AAC2.0.x264-BobDobbs"
+          }
+        ]
+      }
+    },
+    {
+      "id": "5924877",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "5924877",
+        "language": "en",
+        "download_count": 849,
+        "new_download_count": 12,
+        "hearing_impaired": true,
+        "hd": true,
+        "fps": 23.976,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2020-10-15T13:18:42Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "a-killer-rising-2020-1080p-webrip-aac2-0-x264-bobdobbs",
+        "machine_translated": false,
+        "release": "A.Killer.Rising.2020.1080p.WEBRip.AAC2.0.x264-BobDobbs",
+        "comments": "HI [official subtitles, fixed & corrected]\r\n[work with all HDRip/WEBRip/WEB-DL versions]\r\nPlease don't reupload on OpenSubtitles, Thanks.",
+        "legacy_subtitle_id": 8387597,
+        "legacy_uploader_id": 7671477,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_5",
+          "rank": "Read Only Member"
+        },
+        "feature_details": {
+          "feature_id": 1279793,
+          "feature_type": "Movie",
+          "year": 2020,
+          "title": "A Killer Rising",
+          "movie_name": "2020 - A Killer Rising",
+          "imdb_id": 12452630,
+          "tmdb_id": 753565
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/a-killer-rising-2020-1080p-webrip-aac2-0-x264-bobdobbs",
+        "related_links": [
+          {
+            "label": "All subtitles for a killer rising",
+            "url": "https://www.opensubtitles.com/en/movies/a-killer-rising-2020-1080p-webrip-aac2-0-x264-bobdobbs",
+            "img_url": "https://s4.opensubtitles.com/features/3/9/7/1279793.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 6936269,
+            "cd_number": 1,
+            "file_name": "A.Killer.Rising.2020.1080p.WEBRip.AAC2.0.x264-BobDobbs-HI"
+          }
+        ]
+      }
+    },
+    {
+      "id": "3093628",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "3093628",
+        "language": "en",
+        "download_count": 41646,
+        "new_download_count": 2198,
+        "hearing_impaired": false,
+        "hd": true,
+        "fps": 25,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2013-03-05T19:26:46Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "victorious-s01e04-the-birthweek-song-720p-web-dl-aac-h264-surfer",
+        "machine_translated": false,
+        "release": "Victorious.S01E04.The.Birthweek.Song.720p.WEB-DL.AAC.H264-SURFER",
+        "comments": "",
+        "legacy_subtitle_id": 4846123,
+        "legacy_uploader_id": 0,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_4",
+          "rank": "Application Developers"
+        },
+        "feature_details": {
+          "feature_id": 256730,
+          "feature_type": "Episode",
+          "year": 2010,
+          "title": "The Birthweek Song",
+          "movie_name": "Victorious - S01E04  The Birthweek Song",
+          "imdb_id": 1607534,
+          "tmdb_id": 753565,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 1604099,
+          "parent_title": "Victorious",
+          "parent_tmdb_id": 31251,
+          "parent_feature_id": 10525
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/victorious-s01e04-the-birthweek-song-720p-web-dl-aac-h264-surfer",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Victorious",
+            "url": "https://www.opensubtitles.com/en/features/redirect/10525",
+            "img_url": "https://s8.opensubtitles.com/features/5/2/5/10525.jpg"
+          },
+          {
+            "label": "All subtitles for Episode the birthweek song",
+            "url": "https://www.opensubtitles.com/en/features/redirect/256730",
+            "img_url": "https://s3.opensubtitles.com/features/0/3/7/256730.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 3163304,
+            "cd_number": 1,
+            "file_name": "Victorious.S01E04.The.Birthweek.Song.720p.WEB-DL.AAC.H264-SURFER-eng"
+          }
+        ]
+      }
+    }
+  ]
+}

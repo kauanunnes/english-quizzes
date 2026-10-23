@@ -13,6 +13,7 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "e2e": "playwright test",
     "check-bundle": "node scripts/check-bundle.mjs",
+    "os-probe": "node scripts/os-probe.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate"
   },

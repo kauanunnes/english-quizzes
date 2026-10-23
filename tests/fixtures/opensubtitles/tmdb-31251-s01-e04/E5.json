@@ -1,0 +1,603 @@
+{
+  "query": "ai_translated=exclude&episode_number=4&foreign_parts_only=exclude&languages=en&query=victorious&season_number=1&type=episode",
+  "total_pages": 1,
+  "total_count": 9,
+  "per_page": 50,
+  "page": 1,
+  "data": [
+    {
+      "id": "3093628",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "3093628",
+        "language": "en",
+        "download_count": 41646,
+        "new_download_count": 2198,
+        "hearing_impaired": false,
+        "hd": true,
+        "fps": 25,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2013-03-05T19:26:46Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "victorious-s01e04-the-birthweek-song-720p-web-dl-aac-h264-surfer",
+        "machine_translated": false,
+        "release": "Victorious.S01E04.The.Birthweek.Song.720p.WEB-DL.AAC.H264-SURFER",
+        "comments": "",
+        "legacy_subtitle_id": 4846123,
+        "legacy_uploader_id": 0,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_4",
+          "rank": "Application Developers"
+        },
+        "feature_details": {
+          "feature_id": 256730,
+          "feature_type": "Episode",
+          "year": 2010,
+          "title": "The Birthweek Song",
+          "movie_name": "Victorious - S01E04  The Birthweek Song",
+          "imdb_id": 1607534,
+          "tmdb_id": 753565,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 1604099,
+          "parent_title": "Victorious",
+          "parent_tmdb_id": 31251,
+          "parent_feature_id": 10525
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/victorious-s01e04-the-birthweek-song-720p-web-dl-aac-h264-surfer",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Victorious",
+            "url": "https://www.opensubtitles.com/en/features/redirect/10525",
+            "img_url": "https://s2.opensubtitles.com/features/5/2/5/10525.jpg"
+          },
+          {
+            "label": "All subtitles for Episode the birthweek song",
+            "url": "https://www.opensubtitles.com/en/features/redirect/256730",
+            "img_url": "https://s3.opensubtitles.com/features/0/3/7/256730.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 3163304,
+            "cd_number": 1,
+            "file_name": "Victorious.S01E04.The.Birthweek.Song.720p.WEB-DL.AAC.H264-SURFER-eng"
+          }
+        ]
+      }
+    },
+    {
+      "id": "7861152",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "7861152",
+        "language": "en",
+        "download_count": 8,
+        "new_download_count": 31,
+        "hearing_impaired": false,
+        "hd": false,
+        "fps": 0,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2024-06-19T10:39:02Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "battle-athletes-victory-04",
+        "machine_translated": false,
+        "release": "Battle Athletes Victory 04",
+        "comments": "1-10\nImported from subscene.com/subtitles/battle-athletes-victory-battle-athletes-daiundokai/english/169659",
+        "legacy_subtitle_id": 10210088,
+        "legacy_uploader_id": 10030650,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_1",
+          "rank": "anonymous"
+        },
+        "feature_details": {
+          "feature_id": 2015441,
+          "feature_type": "Episode",
+          "year": 1997,
+          "title": "My Rival",
+          "movie_name": "Battle Athletes Victory - S01E04  My Rival",
+          "imdb_id": 2338270,
+          "tmdb_id": 1943682,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 195542,
+          "parent_title": "Battle Athletes Victory",
+          "parent_tmdb_id": 94196,
+          "parent_feature_id": 2015406
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/battle-athletes-victory-04",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Battle Athletes Victory",
+            "url": "https://www.opensubtitles.com/en/features/redirect/2015406",
+            "img_url": "https://s4.opensubtitles.com/features/6/0/4/2015406.jpg"
+          },
+          {
+            "label": "All subtitles for Episode my rival",
+            "url": "https://www.opensubtitles.com/en/features/redirect/2015441",
+            "img_url": "https://s6.opensubtitles.com/features/1/4/4/2015441.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 8786453,
+            "cd_number": 1,
+            "file_name": "Battle Athletes Victory 04"
+          }
+        ]
+      }
+    },
+    {
+      "id": "10168705",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "10168705",
+        "language": "en",
+        "download_count": 13,
+        "new_download_count": 41,
+        "hearing_impaired": false,
+        "hd": true,
+        "fps": 23.976,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": true,
+        "foreign_parts_only": false,
+        "upload_date": "2025-05-16T18:16:53Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "asw-battle-athletess-daiundoukai-restart-04v2-1080p-hevc-7bd59ecf-eng-3",
+        "machine_translated": false,
+        "release": "[ASW] Battle Athletess Daiundoukai ReSTART! - 04v2 [1080p HEVC][7BD59ECF].eng.3",
+        "comments": "",
+        "legacy_subtitle_id": 13101053,
+        "legacy_uploader_id": 251891,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_2",
+          "rank": "Trusted member"
+        },
+        "feature_details": {
+          "feature_id": 1221748,
+          "feature_type": "Episode",
+          "year": 2021,
+          "title": "Crumbling Fair Play",
+          "movie_name": "Battle Athletes Victory ReSTART! - S01E04  Crumbling Fair Play",
+          "imdb_id": 14564792,
+          "tmdb_id": 2873389,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 13009154,
+          "parent_title": "Battle Athletes Victory ReSTART!",
+          "parent_tmdb_id": 108460,
+          "parent_feature_id": 1215106
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/asw-battle-athletess-daiundoukai-restart-04v2-1080p-hevc-7bd59ecf-eng-3",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Battle Athletes Victory ReSTART!",
+            "url": "https://www.opensubtitles.com/en/features/redirect/1215106",
+            "img_url": "https://s6.opensubtitles.com/features/6/0/1/1215106.jpg"
+          },
+          {
+            "label": "All subtitles for Episode crumbling fair play",
+            "url": "https://www.opensubtitles.com/en/features/redirect/1221748",
+            "img_url": "https://s8.opensubtitles.com/features/8/4/7/1221748.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 11075930,
+            "cd_number": 1,
+            "file_name": "[ASW] Battle Athletess Daiundoukai ReSTART. - 04v2 [1080p HEVC][7BD59ECF].eng.3"
+          }
+        ]
+      }
+    },
+    {
+      "id": "9280229",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "9280229",
+        "language": "en",
+        "download_count": 34,
+        "new_download_count": 419,
+        "hearing_impaired": false,
+        "hd": false,
+        "fps": 0,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2024-07-10T21:08:33Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "victory_gundam_04",
+        "machine_translated": false,
+        "release": "Victory_Gundam_04",
+        "comments": "i do not own it\nImported from subscene.com/subtitles/mobile-suit-victory-gundam/english/1465305",
+        "legacy_subtitle_id": 11293601,
+        "legacy_uploader_id": 10030650,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_1",
+          "rank": "anonymous"
+        },
+        "feature_details": {
+          "feature_id": 2202652,
+          "feature_type": "Episode",
+          "year": 1993,
+          "title": "Who Are We Fighting for...",
+          "movie_name": "Mobile Suit Victory Gundam - S01E04  Who Are We Fighting for...",
+          "imdb_id": 2444376,
+          "tmdb_id": 661734,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 159185,
+          "parent_title": "Mobile Suit Victory Gundam",
+          "parent_tmdb_id": 25797,
+          "parent_feature_id": 2062289
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/victory_gundam_04",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Mobile Suit Victory Gundam",
+            "url": "https://www.opensubtitles.com/en/features/redirect/2062289",
+            "img_url": "https://s1.opensubtitles.com/features/9/8/2/2062289.jpg"
+          },
+          {
+            "label": "All subtitles for Episode who are we fighting for...",
+            "url": "https://www.opensubtitles.com/en/features/redirect/2202652",
+            "img_url": "https://s5.opensubtitles.com/features/2/5/6/2202652.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 10196070,
+            "cd_number": 1,
+            "file_name": "Victory_Gundam_04"
+          }
+        ]
+      }
+    },
+    {
+      "id": "9946641",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "9946641",
+        "language": "en",
+        "download_count": 23,
+        "new_download_count": 26,
+        "hearing_impaired": false,
+        "hd": true,
+        "fps": 0,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2024-07-15T23:28:58Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "11736709-horriblesubs-full-metal-panic-invisible-victory-04-720p",
+        "machine_translated": false,
+        "release": "[HorribleSubs] Full Metal Panic! Invisible Victory - 04 [720p]",
+        "comments": "http://horriblesubs.info/\nImported from subscene.com/subtitles/full-metal-panic-invisible-victory/english/1768229",
+        "legacy_subtitle_id": 11736709,
+        "legacy_uploader_id": 10030650,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_1",
+          "rank": "anonymous"
+        },
+        "feature_details": {
+          "feature_id": 507301,
+          "feature_type": "Episode",
+          "year": 2018,
+          "title": "\"Full Metal Panic! Invisible Victory\" On My Own",
+          "movie_name": "Full Metal Panic! Invisible Victory - S01E04  \"Full Metal Panic! Invisible Victory\" On My Own",
+          "imdb_id": 8343632,
+          "tmdb_id": null,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 7246908,
+          "parent_title": "Full Metal Panic! Invisible Victory",
+          "parent_tmdb_id": 1355378,
+          "parent_feature_id": 18881
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/11736709-horriblesubs-full-metal-panic-invisible-victory-04-720p",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Full Metal Panic! Invisible Victory",
+            "url": "https://www.opensubtitles.com/en/features/redirect/18881",
+            "img_url": "https://s3.opensubtitles.com/features/1/8/8/18881.jpg"
+          },
+          {
+            "label": "All subtitles for Episode \"full metal panic! invisible victory\" on my own",
+            "url": "https://www.opensubtitles.com/en/features/redirect/507301",
+            "img_url": "https://s9.opensubtitles.com/features/1/0/3/507301.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 10855893,
+            "cd_number": 1,
+            "file_name": "[HorribleSubs] Full Metal Panic. Invisible Victory - 04 [720p]_track3_eng"
+          }
+        ]
+      }
+    },
+    {
+      "id": "7497181",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "7497181",
+        "language": "en",
+        "download_count": 193,
+        "new_download_count": 118,
+        "hearing_impaired": false,
+        "hd": false,
+        "fps": 0,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2023-11-24T21:02:58Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "fighting-spirit-rising-s01e04-the-goddess-of-victory",
+        "machine_translated": false,
+        "release": "Fighting Spirit Rising - S01E04 - The Goddess of Victory",
+        "comments": "",
+        "legacy_subtitle_id": 9797705,
+        "legacy_uploader_id": 9930224,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_6",
+          "rank": "Bronze Member"
+        },
+        "feature_details": {
+          "feature_id": 1330645,
+          "feature_type": "Episode",
+          "year": 2013,
+          "title": "\"Fighting Spirit: Rising\" The Goddess of Victory",
+          "movie_name": "Hajime No Ippo: Rising - S01E04  \"Fighting Spirit: Rising\" The Goddess of Victory",
+          "imdb_id": 4948538,
+          "tmdb_id": null,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 3514596,
+          "parent_title": "Hajime No Ippo: Rising",
+          "parent_tmdb_id": 138896,
+          "parent_feature_id": 14401
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/fighting-spirit-rising-s01e04-the-goddess-of-victory",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Hajime No Ippo: Rising",
+            "url": "https://www.opensubtitles.com/en/features/redirect/14401",
+            "img_url": "https://s8.opensubtitles.com/features/1/0/4/14401.jpg"
+          },
+          {
+            "label": "All subtitles for Episode \"fighting spirit: rising\" the goddess of victory",
+            "url": "https://www.opensubtitles.com/en/features/redirect/1330645",
+            "img_url": "https://s3.opensubtitles.com/features/5/4/6/1330645.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 8427830,
+            "cd_number": 1,
+            "file_name": "Fighting Spirit Rising - S01E04 - The Goddess of Victory.eng"
+          }
+        ]
+      }
+    },
+    {
+      "id": "9756097",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "9756097",
+        "language": "en",
+        "download_count": 141,
+        "new_download_count": 577,
+        "hearing_impaired": false,
+        "hd": false,
+        "fps": 0,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2024-07-22T04:43:15Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "yu-gi-oh-gx-104-who-is-victory-with-juudai-vs-saiou_track3_und",
+        "machine_translated": false,
+        "release": "Yu-Gi-Oh! GX 104 - Who is Victory With! Juudai VS Saiou_track3_und",
+        "comments": "i do not own it\nImported from subscene.com/subtitles/yu-gi-oh-duel-monsters-gx/english/2355082",
+        "legacy_subtitle_id": 12239761,
+        "legacy_uploader_id": 10030650,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_1",
+          "rank": "anonymous"
+        },
+        "feature_details": {
+          "feature_id": 1511110,
+          "feature_type": "Episode",
+          "year": 2004,
+          "title": "Raring To Go",
+          "movie_name": "Yu-Gi-Oh! GX - S01E04  Raring To Go",
+          "imdb_id": 796187,
+          "tmdb_id": 483329,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 493334,
+          "parent_title": "Yu-Gi-Oh! GX",
+          "parent_tmdb_id": 12536,
+          "parent_feature_id": 8408
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/yu-gi-oh-gx-104-who-is-victory-with-juudai-vs-saiou_track3_und",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Yu-Gi-Oh! GX",
+            "url": "https://www.opensubtitles.com/en/features/redirect/8408",
+            "img_url": "https://s4.opensubtitles.com/features/8/0/4/8408.jpg"
+          },
+          {
+            "label": "All subtitles for Episode raring to go",
+            "url": "https://www.opensubtitles.com/en/features/redirect/1511110",
+            "img_url": "https://s1.opensubtitles.com/features/0/1/1/1511110.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 10665809,
+            "cd_number": 1,
+            "file_name": "Yu-Gi-Oh. GX 104 - Who is Victory With. Juudai VS Saiou_track3_und"
+          }
+        ]
+      }
+    },
+    {
+      "id": "3918059",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "3918059",
+        "language": "en",
+        "download_count": 369,
+        "new_download_count": 37,
+        "hearing_impaired": false,
+        "hd": true,
+        "fps": 25,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2015-04-17T21:11:34Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "railways-of-the-great-war-with-michael-portillo-web-dl-720p-s01e04-on-track-to-victory",
+        "machine_translated": false,
+        "release": "Railways of the Great War with Michael Portillo - WEB-DL 720p S01E04. On Track to Victory",
+        "comments": "Railways of the Great War with Michael Portillo - WEB-DL 720p S01E04. On Track to Victory",
+        "legacy_subtitle_id": 6120328,
+        "legacy_uploader_id": 1497403,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_7",
+          "rank": "Platinum Member"
+        },
+        "feature_details": {
+          "feature_id": 417208,
+          "feature_type": "Episode",
+          "year": 2014,
+          "title": "On Track to Victory",
+          "movie_name": "Railways of the Great War with Michael Portillo - S01E04  On Track to Victory",
+          "imdb_id": 3922194,
+          "tmdb_id": 1235835,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 3900992,
+          "parent_title": "Railways of the Great War with Michael Portillo",
+          "parent_tmdb_id": 68449,
+          "parent_feature_id": 15217
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/railways-of-the-great-war-with-michael-portillo-web-dl-720p-s01e04-on-track-to-victory",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Railways of the Great War with Michael Portillo",
+            "url": "https://www.opensubtitles.com/en/features/redirect/15217",
+            "img_url": "https://s2.opensubtitles.com/features/7/1/2/15217.jpg"
+          },
+          {
+            "label": "All subtitles for Episode on track to victory",
+            "url": "https://www.opensubtitles.com/en/features/redirect/417208",
+            "img_url": "https://s3.opensubtitles.com/features/8/0/2/417208.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 3995437,
+            "cd_number": 1,
+            "file_name": "Railways of the Great War with Michael Portillo - WEB-DL 720p S01E04. On Track to Victory.EN"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2636760",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "2636760",
+        "language": "en",
+        "download_count": 5126,
+        "new_download_count": 171,
+        "hearing_impaired": false,
+        "hd": false,
+        "fps": 23.976,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2011-09-22T11:07:08Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "4385189-hawaii-five-0-2010-s01-dvdrip-xvid-reward",
+        "machine_translated": false,
+        "release": "Hawaii.Five-0.2010.S01.DVDRip.XviD-REWARD",
+        "comments": "",
+        "legacy_subtitle_id": 4385189,
+        "legacy_uploader_id": 0,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_4",
+          "rank": "Application Developers"
+        },
+        "feature_details": {
+          "feature_id": 269857,
+          "feature_type": "Episode",
+          "year": 2010,
+          "title": "Lanakila (Victory)",
+          "movie_name": "Hawaii Five-0 - S01E04  Lanakila (Victory)",
+          "imdb_id": 1713724,
+          "tmdb_id": 770320,
+          "season_number": 1,
+          "episode_number": 4,
+          "parent_imdb_id": 1600194,
+          "parent_title": "Hawaii Five-0",
+          "parent_tmdb_id": 32798,
+          "parent_feature_id": 10756
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/4385189-hawaii-five-0-2010-s01-dvdrip-xvid-reward",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Hawaii Five-0",
+            "url": "https://www.opensubtitles.com/en/features/redirect/10756",
+            "img_url": "https://s3.opensubtitles.com/features/6/5/7/10756.jpg"
+          },
+          {
+            "label": "All subtitles for Episode lanakila (victory)",
+            "url": "https://www.opensubtitles.com/en/features/redirect/269857",
+            "img_url": "https://s8.opensubtitles.com/features/7/5/8/269857.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 2711119,
+            "cd_number": 1,
+            "file_name": "Hawaii.Five-0.2010.S01E04.Lanakila.(Victory).DVDRip.XviD-REWARD.English"
+          }
+        ]
+      }
+    }
+  ]
+}

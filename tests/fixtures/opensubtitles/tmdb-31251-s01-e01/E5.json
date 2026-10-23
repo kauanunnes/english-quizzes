@@ -1,0 +1,405 @@
+{
+  "query": "ai_translated=exclude&episode_number=1&foreign_parts_only=exclude&languages=en&query=victorious&season_number=1&type=episode",
+  "total_pages": 1,
+  "total_count": 6,
+  "per_page": 50,
+  "page": 1,
+  "data": [
+    {
+      "id": "7861311",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "7861311",
+        "language": "en",
+        "download_count": 19,
+        "new_download_count": 109,
+        "hearing_impaired": false,
+        "hd": false,
+        "fps": 0,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2024-06-19T10:38:14Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "battle-athletes-victory-01",
+        "machine_translated": false,
+        "release": "Battle Athletes Victory 01",
+        "comments": "1-10\nImported from subscene.com/subtitles/battle-athletes-victory-battle-athletes-daiundokai/english/169659",
+        "legacy_subtitle_id": 10210082,
+        "legacy_uploader_id": 10030650,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_1",
+          "rank": "anonymous"
+        },
+        "feature_details": {
+          "feature_id": 2015444,
+          "feature_type": "Episode",
+          "year": 1997,
+          "title": "Ready Go!",
+          "movie_name": "Battle Athletes Victory - S01E01  Ready Go!",
+          "imdb_id": 2162032,
+          "tmdb_id": 1943664,
+          "season_number": 1,
+          "episode_number": 1,
+          "parent_imdb_id": 195542,
+          "parent_title": "Battle Athletes Victory",
+          "parent_tmdb_id": 94196,
+          "parent_feature_id": 2015406
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/battle-athletes-victory-01",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Battle Athletes Victory",
+            "url": "https://www.opensubtitles.com/en/features/redirect/2015406",
+            "img_url": "https://s5.opensubtitles.com/features/6/0/4/2015406.jpg"
+          },
+          {
+            "label": "All subtitles for Episode ready go!",
+            "url": "https://www.opensubtitles.com/en/features/redirect/2015444",
+            "img_url": "https://s4.opensubtitles.com/features/4/4/4/2015444.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 8786685,
+            "cd_number": 1,
+            "file_name": "Battle Athletes Victory 01"
+          }
+        ]
+      }
+    },
+    {
+      "id": "9541629",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "9541629",
+        "language": "en",
+        "download_count": 96,
+        "new_download_count": 481,
+        "hearing_impaired": false,
+        "hd": false,
+        "fps": 0,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2024-07-10T21:07:55Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "victory_gundam_01",
+        "machine_translated": false,
+        "release": "Victory_Gundam_01",
+        "comments": "i do not own it\nImported from subscene.com/subtitles/mobile-suit-victory-gundam/english/1465305",
+        "legacy_subtitle_id": 11293596,
+        "legacy_uploader_id": 10030650,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_1",
+          "rank": "anonymous"
+        },
+        "feature_details": {
+          "feature_id": 2232359,
+          "feature_type": "Episode",
+          "year": 1993,
+          "title": "The White Mobile Suit",
+          "movie_name": "Mobile Suit Victory Gundam - S01E01  The White Mobile Suit",
+          "imdb_id": 1185522,
+          "tmdb_id": 661731,
+          "season_number": 1,
+          "episode_number": 1,
+          "parent_imdb_id": 159185,
+          "parent_title": "Mobile Suit Victory Gundam",
+          "parent_tmdb_id": 25797,
+          "parent_feature_id": 2062289
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/victory_gundam_01",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Mobile Suit Victory Gundam",
+            "url": "https://www.opensubtitles.com/en/features/redirect/2062289",
+            "img_url": "https://s6.opensubtitles.com/features/9/8/2/2062289.jpg"
+          },
+          {
+            "label": "All subtitles for Episode the white mobile suit",
+            "url": "https://www.opensubtitles.com/en/features/redirect/2232359",
+            "img_url": "https://s8.opensubtitles.com/features/9/5/3/2232359.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 10454566,
+            "cd_number": 1,
+            "file_name": "Victory_Gundam_01"
+          }
+        ]
+      }
+    },
+    {
+      "id": "10168704",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "10168704",
+        "language": "en",
+        "download_count": 28,
+        "new_download_count": 80,
+        "hearing_impaired": false,
+        "hd": true,
+        "fps": 23.976,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": true,
+        "foreign_parts_only": false,
+        "upload_date": "2025-05-16T18:14:48Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "asw-battle-athletess-daiundoukai-restart-01v2-1080p-hevc-2d1eb035-eng-3",
+        "machine_translated": false,
+        "release": "[ASW] Battle Athletess Daiundoukai ReSTART! - 01v2 [1080p HEVC][2D1EB035].eng.3",
+        "comments": "",
+        "legacy_subtitle_id": 13101049,
+        "legacy_uploader_id": 251891,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_2",
+          "rank": "Trusted member"
+        },
+        "feature_details": {
+          "feature_id": 1332900,
+          "feature_type": "Episode",
+          "year": 2021,
+          "title": "On Your Marks!",
+          "movie_name": "Battle Athletes Victory ReSTART! - S01E01  On Your Marks!",
+          "imdb_id": 14431416,
+          "tmdb_id": 2408711,
+          "season_number": 1,
+          "episode_number": 1,
+          "parent_imdb_id": 13009154,
+          "parent_title": "Battle Athletes Victory ReSTART!",
+          "parent_tmdb_id": 108460,
+          "parent_feature_id": 1215106
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/asw-battle-athletess-daiundoukai-restart-01v2-1080p-hevc-2d1eb035-eng-3",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Battle Athletes Victory ReSTART!",
+            "url": "https://www.opensubtitles.com/en/features/redirect/1215106",
+            "img_url": "https://s3.opensubtitles.com/features/6/0/1/1215106.jpg"
+          },
+          {
+            "label": "All subtitles for Episode on your marks!",
+            "url": "https://www.opensubtitles.com/en/features/redirect/1332900",
+            "img_url": "https://s3.opensubtitles.com/features/0/0/9/1332900.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 11075929,
+            "cd_number": 1,
+            "file_name": "[ASW] Battle Athletess Daiundoukai ReSTART. - 01v2 [1080p HEVC][2D1EB035].eng.3"
+          }
+        ]
+      }
+    },
+    {
+      "id": "9946652",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "9946652",
+        "language": "en",
+        "download_count": 53,
+        "new_download_count": 140,
+        "hearing_impaired": false,
+        "hd": true,
+        "fps": 0,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2024-07-15T18:42:21Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "11717752-horriblesubs-full-metal-panic-invisible-victory-01-720p",
+        "machine_translated": false,
+        "release": "[HorribleSubs] Full Metal Panic! Invisible Victory - 01 [720p]",
+        "comments": "http://horriblesubs.info/\nImported from subscene.com/subtitles/full-metal-panic-invisible-victory/english/1756877",
+        "legacy_subtitle_id": 11717752,
+        "legacy_uploader_id": 10030650,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_1",
+          "rank": "anonymous"
+        },
+        "feature_details": {
+          "feature_id": 507302,
+          "feature_type": "Episode",
+          "year": 2018,
+          "title": "\"Full Metal Panic! Invisible Victory\" Zero Hour",
+          "movie_name": "Full Metal Panic! Invisible Victory - S01E01  \"Full Metal Panic! Invisible Victory\" Zero Hour",
+          "imdb_id": 8278320,
+          "tmdb_id": null,
+          "season_number": 1,
+          "episode_number": 1,
+          "parent_imdb_id": 7246908,
+          "parent_title": "Full Metal Panic! Invisible Victory",
+          "parent_tmdb_id": 1355378,
+          "parent_feature_id": 18881
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/11717752-horriblesubs-full-metal-panic-invisible-victory-01-720p",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Full Metal Panic! Invisible Victory",
+            "url": "https://www.opensubtitles.com/en/features/redirect/18881",
+            "img_url": "https://s5.opensubtitles.com/features/1/8/8/18881.jpg"
+          },
+          {
+            "label": "All subtitles for Episode \"full metal panic! invisible victory\" zero hour",
+            "url": "https://www.opensubtitles.com/en/features/redirect/507302",
+            "img_url": "https://s8.opensubtitles.com/features/2/0/3/507302.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 10855904,
+            "cd_number": 1,
+            "file_name": "[HorribleSubs] Full Metal Panic. Invisible Victory - 01 [720p]_track3_eng"
+          }
+        ]
+      }
+    },
+    {
+      "id": "8387515",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "8387515",
+        "language": "en",
+        "download_count": 294,
+        "new_download_count": 211,
+        "hearing_impaired": false,
+        "hd": false,
+        "fps": 0,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2024-07-22T10:01:26Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "e01-small-victories-en",
+        "machine_translated": false,
+        "release": "E01-Small Victories",
+        "comments": "Manual resync, minor fixes. For 25fps versions only.\nImported from subscene.com/subtitles/stargate-sg-1-fourth-season/english/2024562",
+        "legacy_subtitle_id": 12263234,
+        "legacy_uploader_id": 10030650,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_1",
+          "rank": "anonymous"
+        },
+        "feature_details": {
+          "feature_id": 27153,
+          "feature_type": "Episode",
+          "year": 1997,
+          "title": "Children of the Gods (1)",
+          "movie_name": "Stargate SG-1 - S01E01  Children of the Gods (1)",
+          "imdb_id": 234794,
+          "tmdb_id": 336043,
+          "season_number": 1,
+          "episode_number": 1,
+          "parent_imdb_id": 118480,
+          "parent_title": "Stargate SG-1",
+          "parent_tmdb_id": 4629,
+          "parent_feature_id": 7155
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/e01-small-victories-en",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Stargate SG-1",
+            "url": "https://www.opensubtitles.com/en/features/redirect/7155",
+            "img_url": "https://s5.opensubtitles.com/features/5/5/1/7155.jpg"
+          },
+          {
+            "label": "All subtitles for Episode children of the gods (1)",
+            "url": "https://www.opensubtitles.com/en/features/redirect/27153",
+            "img_url": "https://s4.opensubtitles.com/features/3/5/1/27153.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 9311792,
+            "cd_number": 1,
+            "file_name": "E01-Small Victories"
+          }
+        ]
+      }
+    },
+    {
+      "id": "10666498",
+      "type": "subtitle",
+      "attributes": {
+        "subtitle_id": "10666498",
+        "language": "en",
+        "download_count": 101,
+        "new_download_count": 56,
+        "hearing_impaired": true,
+        "hd": true,
+        "fps": 23.976,
+        "votes": 0,
+        "ratings": 0,
+        "from_trusted": false,
+        "foreign_parts_only": false,
+        "upload_date": "2025-10-14T06:54:25Z",
+        "ai_translated": false,
+        "nb_cd": 1,
+        "slug": "s01e01-victory-speech-magic-chair-web-dl-amzn",
+        "machine_translated": false,
+        "release": "S01E01 - Victory Speech, Magic Chair [WEB-DL AMZN]",
+        "comments": "",
+        "legacy_subtitle_id": 13323298,
+        "legacy_uploader_id": 10491227,
+        "uploader": {
+          "uploader_id": null,
+          "name": "uploader_3",
+          "rank": "Bronze Member"
+        },
+        "feature_details": {
+          "feature_id": 1690873,
+          "feature_type": "Episode",
+          "year": 2016,
+          "title": "Victory Speech/Magic Chair",
+          "movie_name": "Right Now Kapow - S01E01  Victory Speech/Magic Chair",
+          "imdb_id": 6079766,
+          "tmdb_id": 2398660,
+          "season_number": 1,
+          "episode_number": 1,
+          "parent_imdb_id": 6027168,
+          "parent_title": "Right Now Kapow",
+          "parent_tmdb_id": 107953,
+          "parent_feature_id": 16751
+        },
+        "url": "https://www.opensubtitles.com/en/subtitles/s01e01-victory-speech-magic-chair-web-dl-amzn",
+        "related_links": [
+          {
+            "label": "All subtitles for Tv Show Right Now Kapow",
+            "url": "https://www.opensubtitles.com/en/features/redirect/16751",
+            "img_url": "https://s9.opensubtitles.com/features/1/5/7/16751.jpg"
+          },
+          {
+            "label": "All subtitles for Episode victory speech/magic chair",
+            "url": "https://www.opensubtitles.com/en/features/redirect/1690873",
+            "img_url": "https://s5.opensubtitles.com/features/3/7/8/1690873.jpg"
+          }
+        ],
+        "files": [
+          {
+            "file_id": 12459720,
+            "cd_number": 1,
+            "file_name": "S01E01 - Victory Speech_ Magic Chair [WEB-DL AMZN].en.sdh"
+          }
+        ]
+      }
+    }
+  ]
+}
