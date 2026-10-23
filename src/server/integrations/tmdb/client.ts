@@ -1,6 +1,7 @@
 import { env } from '@server/env';
-import { fetchJson } from '@server/lib/http';
+import { fetchJson, isRetryableError, retryAfterOf } from '@server/lib/http';
 import { logger } from '@server/lib/logger';
+import { withRetry } from '@server/lib/retry';
 import {
   SeriesSearchResult,
   SeriesDetails,
@@ -19,6 +20,7 @@ import {
 } from './mappers';
 
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const TMDB_TIMEOUT_MS = 5000;
 
 const MOCK_SERIES: SeriesDetails[] = [
   {
@@ -139,6 +141,17 @@ export class TmdbClient {
     };
   }
 
+  // docs/03 §3.6: 5 s por chamada, até 2 novas tentativas em 429/5xx/timeout (respeita Retry-After)
+  private get<T>(url: string): Promise<T> {
+    return withRetry(() => fetchJson<T>(url, { headers: this.getHeaders(), timeoutMs: TMDB_TIMEOUT_MS }), {
+      retries: 2,
+      baseMs: 500,
+      maxMs: 2000,
+      shouldRetry: isRetryableError,
+      retryAfterMs: retryAfterOf,
+    });
+  }
+
   async searchSeries(query: string, page = 1): Promise<{ results: SeriesSearchResult[]; totalResults: number; totalPages: number }> {
     if (env.MOCK_UPSTREAMS) {
       const q = query.toLowerCase().trim();
@@ -161,7 +174,7 @@ export class TmdbClient {
 
     try {
       const url = `${TMDB_BASE_URL}/search/tv?query=${encodeURIComponent(query)}&page=${page}&language=pt-BR&include_adult=false`;
-      const res = await fetchJson<TmdbSearchTvResponse>(url, { headers: this.getHeaders() });
+      const res = await this.get<TmdbSearchTvResponse>(url);
       return {
         results: res.results.map(mapSearchResult),
         totalResults: res.total_results,
@@ -182,7 +195,7 @@ export class TmdbClient {
 
     try {
       const url = `${TMDB_BASE_URL}/tv/${seriesId}?language=pt-BR&append_to_response=external_ids`;
-      const res = await fetchJson<TmdbTvDetails>(url, { headers: this.getHeaders() });
+      const res = await this.get<TmdbTvDetails>(url);
       return mapSeriesDetails(res);
     } catch (err) {
       logger.error('TMDB getSeriesDetails failed', { seriesId }, err);
@@ -202,8 +215,8 @@ export class TmdbClient {
       const urlEn = `${TMDB_BASE_URL}/tv/${seriesId}/season/${seasonNumber}?language=en-US`;
 
       const [resPt, resEn] = await Promise.all([
-        fetchJson<TmdbSeasonDetails>(urlPt, { headers: this.getHeaders() }),
-        fetchJson<TmdbSeasonDetails>(urlEn, { headers: this.getHeaders() }).catch(() => undefined),
+        this.get<TmdbSeasonDetails>(urlPt),
+        this.get<TmdbSeasonDetails>(urlEn).catch(() => undefined),
       ]);
 
       return mapSeasonDetails(seriesId, resPt, resEn);
@@ -213,33 +226,29 @@ export class TmdbClient {
     }
   }
 
+  // Episódio en-US com external_ids (§4.1.2, "Resolver a legenda"); o título EN valida a legenda
   async getEpisodeDetailsEn(
     seriesId: number,
     seasonNumber: number,
     episodeNumber: number
-  ): Promise<{ name: string; runtime: number; imdbId?: string | null }> {
+  ): Promise<{ id: number; name: string; runtime: number | null; imdbId: string | null }> {
     if (env.MOCK_UPSTREAMS) {
       return {
+        id: 101,
         name: 'Pilot',
         runtime: 24,
         imdbId: 'tt1604099',
       };
     }
 
-    try {
-      const url = `${TMDB_BASE_URL}/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}?language=en-US&append_to_response=external_ids`;
-      const res = await fetchJson<TmdbEpisodeInfo & { external_ids?: { imdb_id?: string | null } }>(url, {
-        headers: this.getHeaders(),
-      });
-      return {
-        name: res.name,
-        runtime: res.runtime ?? 22,
-        imdbId: res.external_ids?.imdb_id ?? null,
-      };
-    } catch (err) {
-      logger.warn('TMDB getEpisodeDetailsEn fallback', { seriesId, seasonNumber, episodeNumber }, err);
-      return { name: `Episode ${episodeNumber}`, runtime: 22 };
-    }
+    const url = `${TMDB_BASE_URL}/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}?language=en-US&append_to_response=external_ids`;
+    const res = await this.get<TmdbEpisodeInfo & { external_ids?: { imdb_id?: string | null } }>(url);
+    return {
+      id: res.id,
+      name: res.name,
+      runtime: res.runtime ?? null,
+      imdbId: res.external_ids?.imdb_id ?? null,
+    };
   }
 }
 

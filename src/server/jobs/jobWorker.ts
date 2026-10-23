@@ -92,7 +92,7 @@ export async function runGenerationJob(params: RunJobParams): Promise<void> {
         return;
       }
 
-      chosenStrategy = strategy;
+      chosenStrategy = strategy ?? 'none';
       const topCandidate = candidates[0];
       fileId = topCandidate.item.attributes.files[0]?.file_id;
 
@@ -105,7 +105,7 @@ export async function runGenerationJob(params: RunJobParams): Promise<void> {
 
       try {
         const downloadResult = await openSubtitlesClient.downloadSubtitle(fileId);
-        subtitleContent = downloadResult.content;
+        subtitleContent = new TextDecoder().decode(downloadResult.bytes);
       } catch (err) {
         if (err instanceof HttpError && err.status === 406) {
           await updateJob({
@@ -133,7 +133,7 @@ export async function runGenerationJob(params: RunJobParams): Promise<void> {
     });
 
     const parsed = parseSrtOrVtt(subtitleContent);
-    const qa = evaluateSubtitleQuality(parsed.lines, epDetailsEn.runtime);
+    const qa = evaluateSubtitleQuality(parsed.lines, epDetailsEn.runtime ?? undefined);
 
     if (!qa.passed) {
       logger.warn('Subtitle failed QA', { jobId, reason: qa.reason });
@@ -168,7 +168,7 @@ export async function runGenerationJob(params: RunJobParams): Promise<void> {
       seasonNumber,
       episodeNumber,
       episodeTitle: epDetailsEn.name,
-      runtimeMinutes: epDetailsEn.runtime,
+      runtimeMinutes: epDetailsEn.runtime ?? 0,
       segments,
       onProgress: async (completed, total) => {
         const pct = Math.round(60 + (completed / total) * 30);

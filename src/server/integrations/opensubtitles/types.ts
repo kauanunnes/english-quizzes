@@ -18,12 +18,15 @@ export interface OsSubtitleAttributes {
     cd_number: number;
     file_name: string;
   }>;
+  // Nomes e tipos confirmados pelo os-probe em 23/10/2026 (§4.2.5 ⚠️)
   feature_details?: {
     feature_id?: number;
     feature_type?: string;
     year?: number;
     title?: string;
+    movie_name?: string;
     parent_title?: string;
+    parent_feature_id?: number;
     season_number?: number;
     episode_number?: number;
     imdb_id?: number;
@@ -45,6 +48,21 @@ export interface OsSearchResponse {
   per_page: number;
   page: number;
   data: OsSubtitleItem[];
+}
+
+// Formato confirmado pelo os-probe (tests/fixtures/opensubtitles/login.shape.json)
+export interface OsLoginResponse {
+  user: {
+    allowed_translations: number;
+    allowed_downloads: number;
+    level: string;
+    user_id: number;
+    ext_installed: boolean;
+    vip: boolean;
+  };
+  token: string;
+  status: number;
+  base_url: string;
 }
 
 export interface OsDownloadResponse {

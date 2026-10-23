@@ -1,16 +1,29 @@
+import * as zlib from 'node:zlib';
 import { env } from '@server/env';
-import { fetchJson, fetchWithTimeout } from '@server/lib/http';
+import { fetchJson, fetchWithTimeout, HttpError, isRetryableError, retryAfterOf } from '@server/lib/http';
 import { logger } from '@server/lib/logger';
+import { withRetry } from '@server/lib/retry';
 import { buildSubtitleQuery } from './query';
 import { scoreCandidate, filterCandidate } from './selection';
 import { calculateTitleSimilarity } from './titleMatch';
-import { OsSearchResponse, OsDownloadResponse, OsSubtitleItem } from './types';
-import * as zlib from 'node:zlib';
+import { OsSearchResponse, OsDownloadResponse, OsSubtitleItem, OsLoginResponse } from './types';
 
 const OS_BASE_URL = 'https://api.opensubtitles.com/api/v1';
 
-let cachedToken: string | null = null;
-let tokenExpiresAt = 0;
+// docs/03 §3.6
+const LOGIN_TIMEOUT_MS = 10_000;
+const SEARCH_TIMEOUT_MS = 8_000;
+const DOWNLOAD_REQUEST_TIMEOUT_MS = 10_000;
+const FILE_TIMEOUT_MS = 15_000;
+// §4.2.3: validade do token não documentada; reaproveitar token + host por 12 h
+const SESSION_TTL_MS = 12 * 3600 * 1000;
+// §4.2.5 (V1)
+const TITLE_SIMILARITY_MIN = 0.8;
+
+// Nomes iguais ao enum de subtitle_selections.strategy (docs/05 §5.3)
+export type SubtitleStrategy = 'parent_tmdb' | 'imdb_episode' | 'tmdb_episode' | 'parent_imdb' | 'query';
+
+let session: { token: string; baseUrl: string; expiresAt: number } | null = null;
 
 export interface FindSubtitleParams {
   seriesId: number;
@@ -25,7 +38,21 @@ export interface FindSubtitleParams {
 export interface CandidateResult {
   item: OsSubtitleItem;
   score: number;
-  strategy: string;
+  strategy: SubtitleStrategy;
+}
+
+export interface DownloadedSubtitle {
+  bytes: Uint8Array;
+  fileName: string | null;
+  remaining: number | null;
+  resetTimeUtc: string | null;
+}
+
+// login devolve só o host (ex.: "vip-api.opensubtitles.com")
+function apiBaseFromHost(baseUrl: string | undefined): string {
+  if (!baseUrl) return OS_BASE_URL;
+  const host = baseUrl.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  return host ? `https://${host}/api/v1` : OS_BASE_URL;
 }
 
 export class OpenSubtitlesClient {
@@ -42,60 +69,42 @@ export class OpenSubtitlesClient {
     return env.MOCK_UPSTREAMS || env.OS_MODE === 'mock';
   }
 
-  private async getAuthToken(): Promise<string | null> {
-    if (cachedToken && Date.now() < tokenExpiresAt) {
-      return cachedToken;
-    }
+  private baseHeaders(): Record<string, string> {
+    return { 'Api-Key': this.apiKey, 'User-Agent': this.userAgent };
+  }
 
-    if (!env.OPENSUBTITLES_USERNAME || !env.OPENSUBTITLES_PASSWORD || !this.apiKey) {
-      return null;
-    }
+  private async getSession(): Promise<{ token: string; baseUrl: string }> {
+    if (session && Date.now() < session.expiresAt) return session;
 
-    try {
-      const res = await fetchJson<{ token: string; base_url?: string }>(`${OS_BASE_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Api-Key': this.apiKey,
-          'User-Agent': this.userAgent,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: env.OPENSUBTITLES_USERNAME,
-          password: env.OPENSUBTITLES_PASSWORD,
+    // §4.2.9: login tem limite próprio (~1/s); no máximo 1 nova tentativa
+    const res = await withRetry(
+      () =>
+        fetchJson<OsLoginResponse>(`${OS_BASE_URL}/login`, {
+          method: 'POST',
+          headers: { ...this.baseHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: env.OPENSUBTITLES_USERNAME, password: env.OPENSUBTITLES_PASSWORD }),
+          timeoutMs: LOGIN_TIMEOUT_MS,
         }),
-      });
+      { retries: 1, baseMs: 1000, maxMs: 2000, shouldRetry: isRetryableError, retryAfterMs: retryAfterOf }
+    );
 
-      if (res.token) {
-        cachedToken = res.token;
-        tokenExpiresAt = Date.now() + 11 * 3600 * 1000; // 11 hours
-        return cachedToken;
-      }
-    } catch (err) {
-      logger.error('Failed to log in to OpenSubtitles', {}, err);
-    }
-
-    return null;
+    session = { token: res.token, baseUrl: apiBaseFromHost(res.base_url), expiresAt: Date.now() + SESSION_TTL_MS };
+    return session;
   }
 
   async searchSubtitles(queryString: string): Promise<OsSubtitleItem[]> {
-    if (!this.apiKey) return [];
-
-    const url = `${OS_BASE_URL}/subtitles?${queryString}`;
-    try {
-      const res = await fetchJson<OsSearchResponse>(url, {
-        headers: {
-          'Api-Key': this.apiKey,
-          'User-Agent': this.userAgent,
-        },
-      });
-      return res.data || [];
-    } catch (err) {
-      logger.warn('OpenSubtitles search failed', { queryString }, err);
-      return [];
-    }
+    const res = await withRetry(
+      () =>
+        fetchJson<OsSearchResponse>(`${OS_BASE_URL}/subtitles?${queryString}`, {
+          headers: this.baseHeaders(),
+          timeoutMs: SEARCH_TIMEOUT_MS,
+        }),
+      { retries: 2, baseMs: 500, maxMs: 1500, shouldRetry: isRetryableError, retryAfterMs: retryAfterOf }
+    );
+    return res.data || [];
   }
 
-  async findBestCandidates(params: FindSubtitleParams): Promise<{ candidates: CandidateResult[]; strategy: string }> {
+  async findBestCandidates(params: FindSubtitleParams): Promise<{ candidates: CandidateResult[]; strategy: SubtitleStrategy | null }> {
     if (this.useMock) {
       logger.info('OpenSubtitles in mock mode, returning synthetic candidate');
       return {
@@ -117,20 +126,26 @@ export class OpenSubtitlesClient {
                 upload_date: new Date().toISOString(),
                 release: 'WEB-DL.Amazon',
                 files: [{ file_id: 999999, cd_number: 1, file_name: 'episode.en.srt' }],
+                feature_details: {
+                  title: params.episodeTitleEn,
+                  parent_title: params.seriesTitle,
+                  season_number: params.seasonNumber,
+                  episode_number: params.episodeNumber,
+                },
               },
             },
             score: 100,
-            strategy: 'mock',
+            strategy: 'parent_tmdb',
           },
         ],
-        strategy: 'mock',
+        strategy: 'parent_tmdb',
       };
     }
 
-    const strategies = [
-      // E1: parent_tmdb_id + S + E
+    // Cadeia de §4.2.5 (a E3 e a validação completa V1/V2 entram na Fase 3)
+    const strategies: { name: SubtitleStrategy; query: string; requiresTitleValidation: boolean }[] = [
       {
-        name: 'E1_parent_tmdb',
+        name: 'parent_tmdb',
         query: buildSubtitleQuery({
           ai_translated: 'exclude',
           episode_number: params.episodeNumber,
@@ -141,11 +156,10 @@ export class OpenSubtitlesClient {
         }),
         requiresTitleValidation: true,
       },
-      // E2: imdb_id do episódio
       ...(params.episodeImdbId
         ? [
             {
-              name: 'E2_episode_imdb',
+              name: 'imdb_episode' as const,
               query: buildSubtitleQuery({
                 ai_translated: 'exclude',
                 foreign_parts_only: 'exclude',
@@ -156,11 +170,10 @@ export class OpenSubtitlesClient {
             },
           ]
         : []),
-      // E3: parent_imdb_id + S + E
       ...(params.seriesImdbId
         ? [
             {
-              name: 'E4_parent_imdb',
+              name: 'parent_imdb' as const,
               query: buildSubtitleQuery({
                 ai_translated: 'exclude',
                 episode_number: params.episodeNumber,
@@ -173,9 +186,8 @@ export class OpenSubtitlesClient {
             },
           ]
         : []),
-      // E5: series query + S + E
       {
-        name: 'E5_query_name',
+        name: 'query',
         query: buildSubtitleQuery({
           ai_translated: 'exclude',
           episode_number: params.episodeNumber,
@@ -197,104 +209,93 @@ export class OpenSubtitlesClient {
         const attr = item.attributes;
         if (!filterCandidate(attr)) return false;
 
-        // V1 Title similarity validation
         if (strat.requiresTitleValidation && params.episodeTitleEn && attr.feature_details?.title) {
-          const sim = calculateTitleSimilarity(attr.feature_details.title, params.episodeTitleEn);
-          if (sim < 0.75) {
-            return false;
-          }
+          return calculateTitleSimilarity(attr.feature_details.title, params.episodeTitleEn) >= TITLE_SIMILARITY_MIN;
         }
         return true;
       });
 
       if (filtered.length > 0) {
-        const scored = filtered.map((item) => ({
-          item,
-          score: scoreCandidate(item.attributes),
-          strategy: strat.name,
-        }));
-
+        const scored = filtered.map((item) => ({ item, score: scoreCandidate(item.attributes), strategy: strat.name }));
         scored.sort((a, b) => b.score - a.score);
         return { candidates: scored, strategy: strat.name };
       }
     }
 
-    return { candidates: [], strategy: 'none' };
+    return { candidates: [], strategy: null };
   }
 
-  async downloadSubtitle(fileId: number): Promise<{ content: string; remaining: number }> {
+  // §4.2.8: consome 1 download da cota; os bytes seguem só em memória (ADR-009)
+  async downloadSubtitle(fileId: number): Promise<DownloadedSubtitle> {
     if (this.useMock) {
-      // Return synthetic sample subtitle content in dev/test (with enough lines to satisfy QA)
-      const mockLines: string[] = [];
-      const characters = ['TORI', 'ANDRE', 'JADE', 'BECK', 'CAT', 'ROBBIE', 'TRINA'];
-      const phrases = [
-        'Hey guys, check out this brand new performance!',
-        'The acoustic rhythm on this track is absolutely amazing.',
-        "Don't get ahead of yourself, you still have to pass the showcase.",
-        'Jade, relax. She has genuine talent and you know it.',
-        'Guess what! My brother just made a rocket out of cardboard!',
-        "Cat, that doesn't sound safe at all.",
-        'I am the most talented student in this entire academy!',
-        'Why does everyone always doubt my artistic vision?',
-        'We should really rehearse the final scene before Sikowitz arrives.',
-        'Did someone say coconut milk? Because I could really use one.',
-      ];
-
-      for (let i = 0; i < 180; i++) {
-        const startSec = i * 6.5;
-        const endSec = startSec + 4.5;
-        const char = characters[i % characters.length];
-        const phrase = phrases[i % phrases.length];
-        const formatTime = (s: number) => {
-          const m = Math.floor(s / 60);
-          const sec = Math.floor(s % 60);
-          return `00:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')},000`;
-        };
-        mockLines.push(`${i + 1}\n${formatTime(startSec)} --> ${formatTime(endSec)}\n${char}: ${phrase}\n`);
-      }
-
-      return {
-        content: mockLines.join('\n'),
-        remaining: 20,
-      };
+      return { bytes: new TextEncoder().encode(buildMockSrt()), fileName: 'episode.en.srt', remaining: null, resetTimeUtc: null };
     }
 
-    const token = await this.getAuthToken();
-    const downloadRes = await fetchJson<OsDownloadResponse>(`${OS_BASE_URL}/download`, {
-      method: 'POST',
-      headers: {
-        'Api-Key': this.apiKey,
-        'User-Agent': this.userAgent,
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    const { token, baseUrl } = await this.getSession();
+    // Timeout no POST /download não é repetido: o download pode ter sido contado (§4.2.9)
+    const download = await withRetry(
+      () =>
+        fetchJson<OsDownloadResponse>(`${baseUrl}/download`, {
+          method: 'POST',
+          headers: { ...this.baseHeaders(), 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ file_id: fileId, sub_format: 'srt' }),
+          timeoutMs: DOWNLOAD_REQUEST_TIMEOUT_MS,
+        }),
+      { retries: 1, baseMs: 500, maxMs: 1500, shouldRetry: (e) => e instanceof HttpError && e.status >= 500 }
+    );
+
+    const raw = await withRetry(
+      async () => {
+        const res = await fetchWithTimeout(download.link, { timeoutMs: FILE_TIMEOUT_MS });
+        if (!res.ok) throw new HttpError(res.status, res.statusText);
+        return new Uint8Array(await res.arrayBuffer());
       },
-      body: JSON.stringify({
-        file_id: fileId,
-        sub_format: 'srt',
-      }),
-    });
+      { retries: 1, baseMs: 500, maxMs: 1500, shouldRetry: isRetryableError }
+    );
 
-    const fileRes = await fetchWithTimeout(downloadRes.link, { timeoutMs: 15000 });
-    const arrayBuffer = await fileRes.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Decompress if gzip (first bytes 0x1F, 0x8B)
-    let rawBytes = buffer;
-    if (buffer.length > 2 && buffer[0] === 0x1f && buffer[1] === 0x8b) {
-      rawBytes = zlib.gunzipSync(buffer);
-    }
-
-    // Decode as UTF-8 or Latin1
-    let text = rawBytes.toString('utf-8');
-    if (text.includes('\uFFFD')) {
-      text = rawBytes.toString('latin1');
-    }
+    // gzip (1F 8B) é descompactado aqui; o resto do pipeline recebe só bytes de texto
+    const bytes = raw.length > 2 && raw[0] === 0x1f && raw[1] === 0x8b ? new Uint8Array(zlib.gunzipSync(raw)) : raw;
 
     return {
-      content: text,
-      remaining: downloadRes.remaining ?? 20,
+      bytes,
+      fileName: download.file_name ?? null,
+      remaining: typeof download.remaining === 'number' ? download.remaining : null,
+      resetTimeUtc: download.reset_time_utc ?? null,
     };
   }
+}
+
+// SRT sintético para o modo mock: falas inventadas, ~20 min, com rótulos, música e descrições sonoras
+function buildMockSrt(): string {
+  const characters = ['TORI', 'ANDRE', 'JADE', 'BECK', 'CAT', 'ROBBIE', 'TRINA'];
+  const phrases = [
+    'Hey guys, check out this brand new performance!',
+    'The acoustic rhythm on this track is absolutely amazing.',
+    "Don't get ahead of yourself, you still have to pass the showcase.",
+    'Jade, relax. She has genuine talent and you know it.',
+    'Guess what! My brother just made a rocket out of cardboard!',
+    "Cat, that doesn't sound safe at all.",
+    'I am the most talented student in this entire academy!',
+    'Why does everyone always doubt my artistic vision?',
+    'We should really rehearse the final scene before Sikowitz arrives.',
+    'Did someone say coconut milk? Because I could really use one.',
+  ];
+  const time = (s: number) => {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = Math.floor(s % 60);
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')},000`;
+  };
+
+  const cues: string[] = [];
+  for (let i = 0; i < 180; i++) {
+    const start = i * 6.5;
+    let text = `${characters[i % characters.length]}: ${phrases[i % phrases.length]}`;
+    if (i % 25 === 0) text = '♪ Make it shine ♪';
+    else if (i % 17 === 0) text = `[laughs] ${phrases[i % phrases.length]}`;
+    cues.push(`${i + 1}\n${time(start)} --> ${time(start + 4.5)}\n${text}\n`);
+  }
+  return cues.join('\n');
 }
 
 export const openSubtitlesClient = new OpenSubtitlesClient();

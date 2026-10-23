@@ -7,11 +7,39 @@ export class HttpError extends Error {
     public status: number,
     public statusText: string,
     public data?: unknown,
-    message?: string
+    message?: string,
+    public retryAfterMs?: number
   ) {
     super(message || `HTTP ${status}: ${statusText}`);
     this.name = 'HttpError';
   }
+}
+
+export class TimeoutError extends Error {
+  constructor(public url: string, public timeoutMs: number) {
+    // Só o host: a URL completa pode carregar parâmetros
+    super(`Request to ${new URL(url).host} timed out after ${timeoutMs}ms`);
+    this.name = 'TimeoutError';
+  }
+}
+
+// Retry-After em segundos ou como data HTTP
+export function parseRetryAfter(header: string | null, now = Date.now()): number | undefined {
+  if (!header) return undefined;
+  const seconds = Number(header);
+  if (Number.isFinite(seconds)) return Math.max(0, seconds * 1000);
+  const date = Date.parse(header);
+  return Number.isNaN(date) ? undefined : Math.max(0, date - now);
+}
+
+// 429, 5xx e timeout podem ser repetidos (docs/04 §4.1.5 e §4.2.9)
+export function isRetryableError(e: unknown): boolean {
+  if (e instanceof TimeoutError) return true;
+  return e instanceof HttpError && (e.status === 429 || e.status >= 500);
+}
+
+export function retryAfterOf(e: unknown): number | undefined {
+  return e instanceof HttpError ? e.retryAfterMs : undefined;
 }
 
 export async function fetchWithTimeout(url: string, options: FetchOptions = {}): Promise<Response> {
@@ -30,8 +58,8 @@ export async function fetchWithTimeout(url: string, options: FetchOptions = {}):
     });
     return response;
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error(`Request to ${url} timed out after ${timeoutMs}ms`);
+    if (error instanceof Error && error.name === 'AbortError' && controller.signal.aborted) {
+      throw new TimeoutError(url, timeoutMs);
     }
     throw error;
   } finally {
@@ -53,9 +81,15 @@ export async function fetchJson<T>(url: string, options: FetchOptions = {}): Pro
     try {
       errorData = await response.json();
     } catch {
-      errorData = await response.text();
+      errorData = undefined;
     }
-    throw new HttpError(response.status, response.statusText, errorData);
+    throw new HttpError(
+      response.status,
+      response.statusText,
+      errorData,
+      undefined,
+      parseRetryAfter(response.headers.get('retry-after'))
+    );
   }
 
   return response.json() as Promise<T>;
