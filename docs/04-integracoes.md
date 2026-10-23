@@ -284,11 +284,11 @@ export interface SubtitleProvider {
 ```
 
 ### 4.2.12 Checklist de verificação (Fase 1)
-- [ ] Script `scripts/os-probe.ts` roda E1–E5 para um episódio de teste (por exemplo, Victorious S01E01 e S01E04) e grava as respostas de `/subtitles` em `tests/fixtures/opensubtitles/` (só metadados; trocar nomes de uploader por `uploader_1`, `uploader_2`…).
-- [ ] Confirmar nomes e tipos de `feature_details`, da resposta de `/login` e de `/download`.
-- [ ] Confirmar se `foreign_parts_only=exclude` provoca redirect.
+- [x] Script `scripts/os-probe.ts` roda E1–E5 para um episódio de teste (por exemplo, Victorious S01E01 e S01E04) e grava as respostas de `/subtitles` em `tests/fixtures/opensubtitles/` (só metadados; trocar nomes de uploader por `uploader_1`, `uploader_2`…). *(23/10/2026: S01E01 sem resultados em E1–E4; S01E04 com E1 válido)*
+- [x] Confirmar nomes e tipos de `feature_details`, da resposta de `/login` e de `/download`. *(`feature_details` e `/login` em `tests/fixtures/opensubtitles/`; `/download` confirmado na geração real: `link`, `file_name` e `remaining`)*
+- [x] Confirmar se `foreign_parts_only=exclude` provoca redirect. *(não provoca: HTTP 200 em todas as consultas)*
 - [ ] Observar `reset_time_utc` por alguns dias (janela fixa ou móvel?).
-- [ ] Nunca salvar o `.srt` baixado no repositório: pasta `.private/` no `.gitignore`.
+- [x] Nunca salvar o `.srt` baixado no repositório: pasta `.private/` no `.gitignore`.
 
 ---
 

@@ -52,18 +52,22 @@ F2 pode correr em paralelo à F1; a F5 pode começar com o quiz sintético do se
 **Objetivo:** um quiz real gerado ponta a ponta para **um episódio fixo** (sugestão: Victorious S01E01), visível no celular, usando a arquitetura final em versão mínima.
 **Depende de:** F0.
 
-- [ ] `scripts/os-probe.ts`: descobre o `TRACER_SERIES_ID` via `/search/tv`, roda E1–E5 (§4.2.4) e grava fixtures só de metadados (checklist §4.2.12).
-- [ ] Cliente TMDB mínimo: episódio en-US com `external_ids`.
-- [ ] Cliente OpenSubtitles mínimo: login (token em memória), busca pela estratégia 1, `POST /download`, baixar o arquivo.
-- [ ] Parser mínimo com testes: D01/D03/D04/D06, SRT, R01, R02, R06, R07, R10, M01, M07, S01–S05 (casos ENC-01, ENC-05, SRT-01, SRT-02, CLN-01, CLN-05, CLN-09, SEG-01).
-- [ ] Prompt v0 (§8.3–§8.4) + schema (§8.6) + chamada por bloco com concorrência 4; validação só de schema e de `EVIDENCE_LINES_INVALID`.
-- [ ] Tabelas `episodes`, `quizzes`, `generation_jobs` + migração.
-- [ ] `POST …/quiz` aceitando **apenas** o episódio fixo (`TRACER_ONLY=true`), job + `waitUntil` + `GET /api/jobs/:id`; `GET …/quiz`.
-- [ ] Página `/tracer`: botão "Gerar", progresso por polling e lista de perguntas com "mostrar resposta".
-- [ ] Registrar `usage` e custo no quiz.
-- [ ] Teste de logger: falha se receber string de mais de 3 palavras vinda do pipeline (§7.13).
+> **Concluída em 23/10/2026 (branch `fase-1-tracer`).** Episódio fixo: **Victorious S01E04** (TMDB 31251), porque o S01E01 não tem legenda EN pelas estratégias por ID (os-probe).
+
+- [x] `scripts/os-probe.ts`: descobre o `TRACER_SERIES_ID` via `/search/tv`, roda E1–E5 (§4.2.4) e grava fixtures só de metadados (checklist §4.2.12).
+- [x] Cliente TMDB mínimo: episódio en-US com `external_ids`.
+- [x] Cliente OpenSubtitles mínimo: login (token em memória), busca pela estratégia 1, `POST /download`, baixar o arquivo. *(já existiam E2, E4 e E5; ficam para a Fase 3 completar)*
+- [x] Parser mínimo com testes: D01/D03/D04/D06, SRT, R01, R02, R06, R07, R10, M01, M07, S01–S05 (casos ENC-01, ENC-05, SRT-01, SRT-02, CLN-01, CLN-05, CLN-09, SEG-01). *(também D02, R03, R04, R11, R13, R16, R18, R19, S07 e Q01)*
+- [x] Prompt v0 (§8.3–§8.4) + schema (§8.6) + chamada por bloco com concorrência 4; validação só de schema e de `EVIDENCE_LINES_INVALID`. *(também `ANSWER_INVALID` e os limites do §5.5, exigidos pelo P07)*
+- [x] Tabelas `episodes`, `quizzes`, `generation_jobs` + migração. *(as 9 tabelas do §5.3)*
+- [x] `POST …/quiz` aceitando **apenas** o episódio fixo (`TRACER_ONLY=true`), job + `waitUntil` + `GET /api/jobs/:id`; `GET …/quiz`. *(`after()`, ADR-014)*
+- [x] Página `/tracer`: botão "Gerar", progresso por polling e lista de perguntas com "mostrar resposta".
+- [x] Registrar `usage` e custo no quiz.
+- [x] Teste de logger: falha se receber string de mais de 3 palavras vinda do pipeline (§7.13).
 
 **Critérios de aceite:** no preview, gerar o episódio fixo produz ≥ 3 blocos e ≥ 20 perguntas válidas em ≤ 120 s; reabrir usa o cache (sem chamar OpenSubtitles nem LLM, confirmado no log); nenhuma tabela ou log contém texto de legenda; custo do job registrado.
+
+**Resultado (local, `next start` com APIs reais; o preview depende da Vercel):** 5 blocos e 37 perguntas válidas, job em ~28 s (LLM 26 s); 2º pedido devolveu `200 ready` em 67 ms sem nenhuma linha nova no log; logs só com IDs, códigos e números; US$ 0,128 com `claude-sonnet-5-5` (8,8 mil tokens de entrada, 10,9 mil de saída), 1 download da cota. Achados para a Fase 4: 36 de 37 respostas certas na alternativa "a" (falta o P02) e 1 citação com 16 palavras (falta o `LENGTH_INVALID`). Para a Fase 3: um bloco de ~1 min (12:34–13:36) depois de um trecho sem fala.
 
 ## F2 — Catálogo · M
 **Objetivo:** busca, série, temporadas e episódios com dados da TMDB, cache na CDN e status do quiz.

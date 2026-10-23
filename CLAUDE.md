@@ -35,7 +35,11 @@ pnpm e2e            # Playwright (Pixel 7/Chromium e iPhone 14/WebKit); builda e
 pnpm build          # next build + check-bundle (falha se houver segredo no que vai ao navegador)
 pnpm db:generate    # nova migração a partir de src/server/lib/db/schema.ts
 pnpm db:migrate     # aplica migrações no Neon (DATABASE_URL_UNPOOLED)
+pnpm gen:schema     # regenera src/shared/schemas/llm-segment-output.schema.json a partir do Zod (§8.6)
+pnpm os-probe       # busca E1–E5 na OpenSubtitles e grava fixtures de metadados (não gasta cota)
 ```
+
+Gerar um quiz real localmente (gasta 1 download da cota e ~US$ 0,13): `OS_MODE=live LLM_PROVIDER=anthropic pnpm dev` e abrir `/tracer`.
 
 Variáveis: copie `.env.example` para `.env.local`. O servidor não sobe se faltar variável obrigatória para o ambiente (`src/server/env.ts`, checado em `src/instrumentation.ts`). Sem `DATABASE_URL`, o app usa PGlite em memória com as mesmas migrações.
 
