@@ -1,5 +1,5 @@
 {
-  "id": "07758760-018f-4664-90b1-e64b38bcd09b",
+  "id": "0ffbfd35-fff6-4f6b-a897-0e3fec86cf2b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,8 +14,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "series_id": {
-          "name": "series_id",
+        "tmdb_series_id": {
+          "name": "tmdb_series_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -32,21 +32,56 @@
           "primaryKey": false,
           "notNull": true
         },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "runtime_minutes": {
-          "name": "runtime_minutes",
+        "tmdb_episode_id": {
+          "name": "tmdb_episode_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": 22
+          "notNull": false
         },
-        "imdb_id": {
-          "name": "imdb_id",
+        "imdb_episode_id": {
+          "name": "imdb_episode_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "imdb_series_id": {
+          "name": "imdb_series_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "series_name": {
+          "name": "series_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "episode_name_en": {
+          "name": "episode_name_en",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "episode_name_pt": {
+          "name": "episode_name_pt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "runtime_min": {
+          "name": "runtime_min",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "air_date": {
+          "name": "air_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "original_language": {
+          "name": "original_language",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -55,64 +90,20 @@
           "name": "tmdb_synced_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.generation_jobs": {
-      "name": "generation_jobs",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "episode_key": {
-          "name": "episode_key",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "stage": {
-          "name": "stage",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "progress": {
-          "name": "progress",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "error": {
-          "name": "error",
-          "type": "jsonb",
-          "primaryKey": false,
           "notNull": false
         },
-        "heartbeat_at": {
-          "name": "heartbeat_at",
-          "type": "timestamp with time zone",
+        "subtitle_status": {
+          "name": "subtitle_status",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "default": "'unknown'"
+        },
+        "subtitle_checked_at": {
+          "name": "subtitle_checked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -127,15 +118,308 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        }
+      },
+      "indexes": {
+        "episodes_series_season_idx": {
+          "name": "episodes_series_season_idx",
+          "columns": [
+            {
+              "expression": "tmdb_series_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "season_number",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "episodes_tmdb_synced_idx": {
+          "name": "episodes_tmdb_synced_idx",
+          "columns": [
+            {
+              "expression": "tmdb_synced_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.generation_jobs": {
+      "name": "generation_jobs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "episode_key": {
+          "name": "episode_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'queued'"
+        },
+        "stage": {
+          "name": "stage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'queued'"
+        },
+        "progress": {
+          "name": "progress",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "segments_done": {
+          "name": "segments_done",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "segments_total": {
+          "name": "segments_total",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "error_code": {
+          "name": "error_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "error_detail": {
+          "name": "error_detail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quiz_id": {
+          "name": "quiz_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "device_hash": {
+          "name": "device_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ip_hash": {
+          "name": "ip_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "heartbeat_at": {
+          "name": "heartbeat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
         },
         "finished_at": {
           "name": "finished_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false
+        },
+        "deadline_at": {
+          "name": "deadline_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "jobs_active_episode_uq": {
+          "name": "jobs_active_episode_uq",
+          "columns": [
+            {
+              "expression": "episode_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "status in ('queued','running')",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "jobs_status_created_idx": {
+          "name": "jobs_status_created_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "generation_jobs_episode_key_episodes_episode_key_fk": {
+          "name": "generation_jobs_episode_key_episodes_episode_key_fk",
+          "tableFrom": "generation_jobs",
+          "tableTo": "episodes",
+          "columnsFrom": [
+            "episode_key"
+          ],
+          "columnsTo": [
+            "episode_key"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pregen_queue": {
+      "name": "pregen_queue",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "episode_key": {
+          "name": "episode_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "priority": {
+          "name": "priority",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 100
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "last_error": {
+          "name": "last_error",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "pregen_pending_uq": {
+          "name": "pregen_pending_uq",
+          "columns": [
+            {
+              "expression": "episode_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "status = 'pending'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
@@ -155,9 +439,15 @@
         },
         "value": {
           "name": "value",
-          "type": "text",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -175,49 +465,44 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.quizzes": {
-      "name": "quizzes",
+    "public.question_reports": {
+      "name": "question_reports",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "quiz_id": {
+          "name": "quiz_id",
+          "type": "uuid",
+          "primaryKey": false,
           "notNull": true
         },
-        "episode_key": {
-          "name": "episode_key",
+        "question_id": {
+          "name": "question_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "series_id": {
-          "name": "series_id",
-          "type": "integer",
+        "reason": {
+          "name": "reason",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "season_number": {
-          "name": "season_number",
-          "type": "integer",
+        "comment": {
+          "name": "comment",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
-        "episode_number": {
-          "name": "episode_number",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "document": {
-          "name": "document",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "usage": {
-          "name": "usage",
-          "type": "jsonb",
+        "device_hash": {
+          "name": "device_hash",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -229,18 +514,223 @@
           "default": "now()"
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "quizzes_episode_key_unique": {
-          "name": "quizzes_episode_key_unique",
-          "nullsNotDistinct": false,
+      "indexes": {
+        "reports_quiz_idx": {
+          "name": "reports_quiz_idx",
           "columns": [
-            "episode_key"
-          ]
+            {
+              "expression": "quiz_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
+      "foreignKeys": {
+        "question_reports_quiz_id_quizzes_id_fk": {
+          "name": "question_reports_quiz_id_quizzes_id_fk",
+          "tableFrom": "question_reports",
+          "tableTo": "quizzes",
+          "columnsFrom": [
+            "quiz_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.quizzes": {
+      "name": "quizzes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "episode_key": {
+          "name": "episode_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ready'"
+        },
+        "schema_version": {
+          "name": "schema_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "model": {
+          "name": "model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "effort": {
+          "name": "effort",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subtitle_selection_id": {
+          "name": "subtitle_selection_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "segment_count": {
+          "name": "segment_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "question_count": {
+          "name": "question_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "usage": {
+          "name": "usage",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quality": {
+          "name": "quality",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "quizzes_episode_version_uq": {
+          "name": "quizzes_episode_version_uq",
+          "columns": [
+            {
+              "expression": "episode_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "version",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "quizzes_ready_episode_uq": {
+          "name": "quizzes_ready_episode_uq",
+          "columns": [
+            {
+              "expression": "episode_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "status = 'ready'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "quizzes_episode_key_episodes_episode_key_fk": {
+          "name": "quizzes_episode_key_episodes_episode_key_fk",
+          "tableFrom": "quizzes",
+          "tableTo": "episodes",
+          "columnsFrom": [
+            "episode_key"
+          ],
+          "columnsTo": [
+            "episode_key"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "quizzes_subtitle_selection_id_subtitle_selections_id_fk": {
+          "name": "quizzes_subtitle_selection_id_subtitle_selections_id_fk",
+          "tableFrom": "quizzes",
+          "tableTo": "subtitle_selections",
+          "columnsFrom": [
+            "subtitle_selection_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -249,10 +739,16 @@
       "name": "rate_limit_counters",
       "schema": "",
       "columns": {
-        "key": {
-          "name": "key",
+        "bucket": {
+          "name": "bucket",
           "type": "text",
-          "primaryKey": true,
+          "primaryKey": false,
+          "notNull": true
+        },
+        "window_start": {
+          "name": "window_start",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
           "notNull": true
         },
         "count": {
@@ -260,7 +756,7 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "default": 1
+          "default": 0
         },
         "expires_at": {
           "name": "expires_at",
@@ -269,9 +765,33 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "rl_expires_idx": {
+          "name": "rl_expires_idx",
+          "columns": [
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "rate_limit_counters_bucket_window_start_pk": {
+          "name": "rate_limit_counters_bucket_window_start_pk",
+          "columns": [
+            "bucket",
+            "window_start"
+          ]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
@@ -283,12 +803,25 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "episode_key": {
           "name": "episode_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "job_id": {
+          "name": "job_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider": {
+          "name": "provider",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -299,27 +832,64 @@
           "primaryKey": false,
           "notNull": true
         },
-        "file_id": {
-          "name": "file_id",
+        "provider_subtitle_id": {
+          "name": "provider_subtitle_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider_file_id": {
+          "name": "provider_file_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "release": {
+          "name": "release",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "language": {
+          "name": "language",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'en'"
+        },
+        "hearing_impaired": {
+          "name": "hearing_impaired",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "from_trusted": {
+          "name": "from_trusted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "download_count": {
+          "name": "download_count",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "file_name": {
-          "name": "file_name",
-          "type": "text",
+        "ratings": {
+          "name": "ratings",
+          "type": "real",
           "primaryKey": false,
           "notNull": false
         },
-        "release_name": {
-          "name": "release_name",
-          "type": "text",
+        "votes": {
+          "name": "votes",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "sha256": {
-          "name": "sha256",
-          "type": "text",
+        "upload_date": {
+          "name": "upload_date",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false
         },
@@ -335,12 +905,47 @@
           "primaryKey": false,
           "notNull": false
         },
+        "file_sha256": {
+          "name": "file_sha256",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "file_bytes": {
+          "name": "file_bytes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "encoding": {
+          "name": "encoding",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "format": {
+          "name": "format",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parser_stats": {
+          "name": "parser_stats",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "qa": {
+          "name": "qa",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
         "accepted": {
           "name": "accepted",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": true,
-          "default": true
+          "notNull": true
         },
         "rejection_reason": {
           "name": "rejection_reason",
@@ -348,16 +953,52 @@
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
+        "downloaded_at": {
+          "name": "downloaded_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
+      "indexes": {
+        "subsel_episode_time_idx": {
+          "name": "subsel_episode_time_idx",
+          "columns": [
+            {
+              "expression": "episode_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "downloaded_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "subtitle_selections_episode_key_episodes_episode_key_fk": {
+          "name": "subtitle_selections_episode_key_episodes_episode_key_fk",
+          "tableFrom": "subtitle_selections",
+          "tableTo": "episodes",
+          "columnsFrom": [
+            "episode_key"
+          ],
+          "columnsTo": [
+            "episode_key"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -368,32 +1009,81 @@
       "name": "usage_daily",
       "schema": "",
       "columns": {
-        "date": {
-          "name": "date",
-          "type": "text",
+        "day": {
+          "name": "day",
+          "type": "date",
           "primaryKey": true,
           "notNull": true
         },
-        "llm_cost_usd": {
-          "name": "llm_cost_usd",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "subtitles_downloaded": {
-          "name": "subtitles_downloaded",
+        "generations_started": {
+          "name": "generations_started",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "default": 0
         },
-        "quizzes_generated": {
-          "name": "quizzes_generated",
+        "generations_ready": {
+          "name": "generations_ready",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "default": 0
+        },
+        "generations_failed": {
+          "name": "generations_failed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "subtitle_downloads": {
+          "name": "subtitle_downloads",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "llm_calls": {
+          "name": "llm_calls",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "input_tokens": {
+          "name": "input_tokens",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "output_tokens": {
+          "name": "output_tokens",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "cache_read_tokens": {
+          "name": "cache_read_tokens",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "cache_write_tokens": {
+          "name": "cache_write_tokens",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "cost_usd": {
+          "name": "cost_usd",
+          "type": "numeric(10, 4)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
         }
       },
       "indexes": {},

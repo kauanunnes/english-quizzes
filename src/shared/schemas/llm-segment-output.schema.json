@@ -1,0 +1,164 @@
+{
+  "type": "object",
+  "properties": {
+    "segment_id": {
+      "type": "string"
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "A2",
+              "B1",
+              "B2",
+              "C1"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "comprehension",
+              "inference",
+              "vocabulary",
+              "true_false",
+              "fill_blank"
+            ]
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "line_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^L\\d{3,4}$"
+                }
+              },
+              "quote": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "line_ids",
+              "quote"
+            ],
+            "additionalProperties": false
+          },
+          "focus": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "word",
+                  "phrasal_verb",
+                  "idiom",
+                  "slang",
+                  "collocation",
+                  "grammar"
+                ]
+              }
+            },
+            "required": [
+              "expression",
+              "kind"
+            ],
+            "additionalProperties": false
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "enum": [
+                    "a",
+                    "b",
+                    "c",
+                    "d"
+                  ]
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "text"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "answer": {
+            "type": "string",
+            "enum": [
+              "a",
+              "b",
+              "c",
+              "d"
+            ]
+          },
+          "explanation_en": {
+            "type": "string"
+          },
+          "explanation_pt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slot",
+          "level",
+          "type",
+          "evidence",
+          "focus",
+          "prompt",
+          "options",
+          "answer",
+          "explanation_en",
+          "explanation_pt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "skipped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slot",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "segment_id",
+    "questions",
+    "skipped"
+  ],
+  "additionalProperties": false
+}

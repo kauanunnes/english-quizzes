@@ -11,10 +11,13 @@ describe('Database client', () => {
     )) as unknown as { rows: { table_name: string }[] };
     const tables = result.rows.map((r) => r.table_name);
 
+    // docs/05 §5.3
     expect(tables).toEqual([
       'episodes',
       'generation_jobs',
+      'pregen_queue',
       'provider_state',
+      'question_reports',
       'quizzes',
       'rate_limit_counters',
       'subtitle_selections',

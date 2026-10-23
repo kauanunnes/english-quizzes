@@ -1,42 +1,4 @@
-export interface SubtitleCue {
-  index: number;
-  startMs: number;
-  endMs: number;
-  text: string;
-}
-
-export interface SubtitleLine {
-  id: string; // ex: "L001"
-  index: number;
-  startSeconds: number;
-  endSeconds: number;
-  speaker?: string;
-  text: string;
-}
-
-export interface SubtitleSegment {
-  id: string; // ex: "S1"
-  index: number;
-  startSeconds: number;
-  endSeconds: number;
-  formattedStart: string;
-  formattedEnd: string;
-  lines: SubtitleLine[];
-  contextLines: SubtitleLine[]; // Últimas ~15 linhas do bloco anterior
-}
-
-export interface SubtitleParseResult {
-  lines: SubtitleLine[];
-  totalCues: number;
-  removedHiCount: number;
-  removedMusicCount: number;
-  durationSeconds: number;
-  segments: SubtitleSegment[];
-}
-
-// ---------------------------------------------------------------------------
-// Pipeline do item 7 (docs/07 §7.1)
-// ---------------------------------------------------------------------------
+// docs/07 §7.1 — tipos do pipeline de legendas (tudo em memória; nada disso é persistido com texto)
 import type { ParserStats, QaGate, QaResult } from '@shared/types/subtitles';
 
 export type { ParserStats, QaGate, QaResult };

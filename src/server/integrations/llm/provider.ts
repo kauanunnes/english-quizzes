@@ -1,4 +1,4 @@
-// server/integrations/llm/provider.ts
+// server/integrations/llm/provider.ts — docs/04 §4.3.1
 export type Effort = 'low' | 'medium' | 'high';
 
 export interface GenerateJsonRequest {
@@ -23,7 +23,8 @@ export interface GenerateJsonResult {
     cacheReadTokens: number;
     cacheWriteTokens: number;
   };
-  model: string;
+  model: string; // modelo que de fato respondeu (pode ser o de fallback)
+  servedByFallback: boolean;
   latencyMs: number;
 }
 

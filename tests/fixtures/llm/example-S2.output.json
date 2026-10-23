@@ -1,0 +1,296 @@
+{
+  "segment_id": "S2",
+  "questions": [
+    {
+      "slot": "S2-A2-1",
+      "level": "A2",
+      "type": "comprehension",
+      "evidence": {
+        "line_ids": [
+          "L045"
+        ],
+        "quote": "the rehearsal is tomorrow at nine"
+      },
+      "focus": {
+        "expression": "",
+        "kind": "none"
+      },
+      "prompt": "When is the rehearsal?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Tomorrow at nine"
+        },
+        {
+          "id": "b",
+          "text": "Tonight at nine"
+        },
+        {
+          "id": "c",
+          "text": "On Friday"
+        },
+        {
+          "id": "d",
+          "text": "Next week"
+        }
+      ],
+      "answer": "a",
+      "explanation_en": "Maya tells Leo the rehearsal is tomorrow at nine. Friday is when the play opens, not the rehearsal.",
+      "explanation_pt": "A Maya avisa que o ensaio é amanhã às nove. Sexta-feira é a estreia da peça, não o ensaio."
+    },
+    {
+      "slot": "S2-A2-2",
+      "level": "A2",
+      "type": "fill_blank",
+      "evidence": {
+        "line_ids": [
+          "L053"
+        ],
+        "quote": "I'll text Jordan right now."
+      },
+      "focus": {
+        "expression": "text",
+        "kind": "word"
+      },
+      "prompt": "Complete what Maya says: \"Relax. I'll _____ Jordan right now.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "call"
+        },
+        {
+          "id": "b",
+          "text": "text"
+        },
+        {
+          "id": "c",
+          "text": "find"
+        },
+        {
+          "id": "d",
+          "text": "ask"
+        }
+      ],
+      "answer": "b",
+      "explanation_en": "Maya says she will text Jordan, which means sending him a message on her phone.",
+      "explanation_pt": "A Maya diz que vai mandar uma mensagem (\"text\") para o Jordan pelo celular."
+    },
+    {
+      "slot": "S2-B1-1",
+      "level": "B1",
+      "type": "true_false",
+      "evidence": {
+        "line_ids": [
+          "L043",
+          "L044"
+        ],
+        "quote": "Not yet. I'm swamped with the set design."
+      },
+      "focus": {
+        "expression": "",
+        "kind": "none"
+      },
+      "prompt": "Leo has already finished rewriting the second act.",
+      "options": [
+        {
+          "id": "a",
+          "text": "True"
+        },
+        {
+          "id": "b",
+          "text": "False"
+        }
+      ],
+      "answer": "b",
+      "explanation_en": "When Maya asks, Leo answers \"Not yet\": he is still busy with the set design.",
+      "explanation_pt": "Quando a Maya pergunta, o Leo responde \"Not yet\" (ainda não): ele continua ocupado com o cenário."
+    },
+    {
+      "slot": "S2-B1-2",
+      "level": "B1",
+      "type": "vocabulary",
+      "evidence": {
+        "line_ids": [
+          "L044"
+        ],
+        "quote": "I'm swamped with the set design."
+      },
+      "focus": {
+        "expression": "swamped",
+        "kind": "word"
+      },
+      "prompt": "Leo says he is \"swamped\". What does he mean?",
+      "options": [
+        {
+          "id": "a",
+          "text": "He has too much work"
+        },
+        {
+          "id": "b",
+          "text": "He is feeling sick"
+        },
+        {
+          "id": "c",
+          "text": "He is bored with it"
+        },
+        {
+          "id": "d",
+          "text": "He is tired of acting"
+        }
+      ],
+      "answer": "a",
+      "explanation_en": "\"Swamped\" means having so much work that you can hardly handle it.",
+      "explanation_pt": "\"Swamped\" quer dizer estar atolado de trabalho, sem tempo para mais nada."
+    },
+    {
+      "slot": "S2-B2-1",
+      "level": "B2",
+      "type": "comprehension",
+      "evidence": {
+        "line_ids": [
+          "L051"
+        ],
+        "quote": "figure it out before Friday, or we're cutting the king's scene"
+      },
+      "focus": {
+        "expression": "",
+        "kind": "none"
+      },
+      "prompt": "According to Ms. Park, what will happen if the crown is not found before Friday?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The king's scene will be cut"
+        },
+        {
+          "id": "b",
+          "text": "The play will be canceled"
+        },
+        {
+          "id": "c",
+          "text": "Jordan will have to pay for it"
+        },
+        {
+          "id": "d",
+          "text": "Maya will lose her role"
+        }
+      ],
+      "answer": "a",
+      "explanation_en": "Ms. Park warns that if they don't solve the problem before Friday, they will cut the king's scene.",
+      "explanation_pt": "A Ms. Park avisa que, se o problema não for resolvido até sexta, a cena do rei será cortada."
+    },
+    {
+      "slot": "S2-B2-2",
+      "level": "B2",
+      "type": "inference",
+      "evidence": {
+        "line_ids": [
+          "L046",
+          "L047"
+        ],
+        "quote": "Again? You said that last week."
+      },
+      "focus": {
+        "expression": "",
+        "kind": "none"
+      },
+      "prompt": "What does Maya's reaction suggest about Leo?",
+      "options": [
+        {
+          "id": "a",
+          "text": "He often does things at the last minute"
+        },
+        {
+          "id": "b",
+          "text": "He usually finishes his work very early"
+        },
+        {
+          "id": "c",
+          "text": "He has already rewritten the second act"
+        },
+        {
+          "id": "d",
+          "text": "He does not care about the rehearsal"
+        }
+      ],
+      "answer": "a",
+      "explanation_en": "Maya says \"Again?\" because Leo also planned to stay up all night last week, so it is a habit.",
+      "explanation_pt": "A Maya diz \"Again?\" (de novo?) porque o Leo já tinha feito isso na semana anterior: virou hábito."
+    },
+    {
+      "slot": "S2-C1-1",
+      "level": "C1",
+      "type": "vocabulary",
+      "evidence": {
+        "line_ids": [
+          "L046"
+        ],
+        "quote": "I'll pull an all-nighter."
+      },
+      "focus": {
+        "expression": "pull an all-nighter",
+        "kind": "idiom"
+      },
+      "prompt": "In this context, what does \"pull an all-nighter\" mean?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Stay awake all night to finish something"
+        },
+        {
+          "id": "b",
+          "text": "Go out and party until the morning"
+        },
+        {
+          "id": "c",
+          "text": "Sleep at school before the rehearsal"
+        },
+        {
+          "id": "d",
+          "text": "Cancel a plan at the last minute"
+        }
+      ],
+      "answer": "a",
+      "explanation_en": "To \"pull an all-nighter\" is to stay up the whole night working or studying, usually because of a deadline.",
+      "explanation_pt": "\"Pull an all-nighter\" é virar a noite trabalhando ou estudando, normalmente por causa de um prazo."
+    },
+    {
+      "slot": "S2-C1-2",
+      "level": "C1",
+      "type": "inference",
+      "evidence": {
+        "line_ids": [
+          "L048"
+        ],
+        "quote": "And it worked, didn't it?"
+      },
+      "focus": {
+        "expression": "",
+        "kind": "none"
+      },
+      "prompt": "What is Leo doing when he says \"And it worked, didn't it?\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "Defending his last-minute way of working"
+        },
+        {
+          "id": "b",
+          "text": "Admitting that his plan failed last week"
+        },
+        {
+          "id": "c",
+          "text": "Asking Maya to help him tonight"
+        },
+        {
+          "id": "d",
+          "text": "Apologizing for missing the rehearsal"
+        }
+      ],
+      "answer": "a",
+      "explanation_en": "With this tag question, Leo defends himself: staying up all night worked last week, so he sees no problem.",
+      "explanation_pt": "Com essa pergunta retórica, o Leo se defende: virar a noite funcionou na semana passada, então ele não vê problema."
+    }
+  ],
+  "skipped": []
+}

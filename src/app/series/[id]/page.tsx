@@ -10,6 +10,8 @@ import {
 } from '@shared/types/catalog';
 import { ImageWithFallback } from '@/components/ImageWithFallback';
 import { useAppStore } from '@shared/store/useAppStore';
+import { stageMessage, type GenerateQuizAccepted, type GenerateQuizReady, type JobStatus } from '@shared/types/generation';
+import type { Problem } from '@shared/types/errors';
 import {
   Play,
   Clock,
@@ -34,6 +36,18 @@ interface GenerationModalState {
   percentage: number;
   status: string;
   error?: string | null;
+  pollAfterMs?: number; // intervalo pedido pelo servidor (§6.6)
+  polls?: number; // cada consulta concluída agenda a próxima
+}
+
+// Corpo de erro da API (problem+json, §6.1)
+async function problemTitle(res: Response, fallback: string): Promise<string> {
+  try {
+    const problem = (await res.json()) as Partial<Problem>;
+    return problem.title || fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 export default function SeriesPage({ params }: { params: Promise<{ id: string }> }) {
@@ -113,40 +127,56 @@ export default function SeriesPage({ params }: { params: Promise<{ id: string }>
     loadSeason();
   }, [seriesId, activeSeason, series]);
 
-  // Polling for generation job progress
+  // Polling do job no intervalo que o servidor pede (pollAfterMs, §6.6); pausa quando a página fica escondida
   useEffect(() => {
     if (!genModal.isOpen || !genModal.jobId || genModal.status === 'ready' || genModal.status === 'failed') {
       return;
     }
 
-    const interval = setInterval(async () => {
+    const timer = setTimeout(async () => {
       try {
         const res = await fetch(`/api/jobs/${genModal.jobId}`);
-        if (!res.ok) return;
-        const job = await res.json();
+        if (!res.ok) {
+          const message = await problemTitle(res, 'Não foi possível acompanhar a geração.');
+          setGenModal((prev) => ({ ...prev, status: 'failed', error: message }));
+          return;
+        }
+        const job = (await res.json()) as JobStatus;
 
         setGenModal((prev) => ({
           ...prev,
-          stage: job.stage || prev.stage,
-          percentage: job.progress?.percentage ?? prev.percentage,
+          stage: stageMessage(job.stage, job.segments),
+          percentage: job.progress,
           status: job.status,
-          error: job.error?.message,
+          error: job.error?.message ?? null,
+          pollAfterMs: job.pollAfterMs ?? prev.pollAfterMs,
+          polls: (prev.polls ?? 0) + 1,
         }));
 
         if (job.status === 'ready') {
-          clearInterval(interval);
           // Redirect to quiz after brief confirmation
           setTimeout(() => {
             router.push(`/episodes/${genModal.seriesId}/${genModal.seasonNumber}/${genModal.episodeNumber}/quiz`);
           }, 1200);
         }
-      } catch (err) {
-        console.error('Job polling error:', err);
+      } catch {
+        // Rede instável no celular: tenta de novo no próximo intervalo
+        setGenModal((prev) => ({ ...prev, polls: (prev.polls ?? 0) + 1 }));
       }
-    }, 2000);
+    }, genModal.pollAfterMs ?? 2000);
 
-    return () => clearInterval(interval);
-  }, [genModal.isOpen, genModal.jobId, genModal.status, genModal.seriesId, genModal.seasonNumber, genModal.episodeNumber, router]);
+    return () => clearTimeout(timer);
+  }, [
+    genModal.isOpen,
+    genModal.jobId,
+    genModal.status,
+    genModal.polls,
+    genModal.pollAfterMs,
+    genModal.seriesId,
+    genModal.seasonNumber,
+    genModal.episodeNumber,
+    router,
+  ]);
 
   const toggleSpoiler = (epNumber: number) => {
     setRevealedSpoilers((prev) => ({
@@ -179,7 +209,7 @@ export default function SeriesPage({ params }: { params: Promise<{ id: string }>
         headers: { 'X-Access-Code': code },
       });
 
-      if (res.status === 403) {
+      if (res.status === 401) {
         // Sem pistas sobre o motivo (US-08); o código salvo deixa de valer
         setAccessCode('');
         setCodeDraft('');
@@ -188,19 +218,21 @@ export default function SeriesPage({ params }: { params: Promise<{ id: string }>
       }
 
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.message || 'Falha ao solicitar criação do quiz');
+        throw new Error(await problemTitle(res, 'Falha ao solicitar criação do quiz'));
       }
 
-      const data = await res.json();
-      if (data.jobId) {
+      const data = (await res.json()) as GenerateQuizAccepted | GenerateQuizReady;
+      if (data.status !== 'ready') {
         setGenModal((prev) => ({
           ...prev,
           jobId: data.jobId,
-          stage: 'Na fila...',
-          percentage: 15,
+          status: data.status,
+          stage: stageMessage('queued', null),
+          percentage: 0,
+          pollAfterMs: data.pollAfterMs,
+          polls: 0,
         }));
-      } else if (data.episodeKey) {
+      } else {
         // Already ready!
         setGenModal((prev) => ({
           ...prev,

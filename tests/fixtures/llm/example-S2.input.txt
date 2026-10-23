@@ -1,0 +1,40 @@
+<episode>
+series: Example Show
+episode: S01E02 "The Missing Crown"
+block: S2 (2 of 4)
+note: Speaker labels come from captions for the hearing impaired.
+</episode>
+
+<slot_plan>
+- S2-A2-1: level A2, type comprehension
+- S2-A2-2: level A2, type fill_blank
+- S2-B1-1: level B1, type true_false
+- S2-B1-2: level B1, type vocabulary
+- S2-B2-1: level B2, type comprehension
+- S2-B2-2: level B2, type inference
+- S2-C1-1: level C1, type vocabulary
+- S2-C1-2: level C1, type inference
+</slot_plan>
+
+<segment id="S2">
+<context>
+L041 [MAYA]: Okay, the play opens on Friday.
+L042 [LEO]: Don't remind me.
+</context>
+<lines>
+L043 [MAYA]: Did you finish rewriting the second act?
+L044 [LEO]: Not yet. I'm swamped with the set design.
+L045 [MAYA]: Leo, the rehearsal is tomorrow at nine.
+L046 [LEO]: I know, I know. I'll pull an all-nighter.
+L047 [MAYA]: Again? You said that last week.
+L048 [LEO]: And it worked, didn't it?
+L049 [MS. PARK]: Maya, have you seen the crown? It was in the prop box.
+L050 [MAYA]: No. Maybe Jordan borrowed it for the photos.
+L051 [MS. PARK]: Well, figure it out before Friday, or we're cutting the king's scene.
+L052 [LEO]: Cutting it? That's my best scene!
+L053 [MAYA]: Relax. I'll text Jordan right now.
+L054 [LEO]: Thanks. You're a lifesaver.
+</lines>
+</segment>
+
+Write the questions for block S2.

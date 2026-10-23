@@ -2,7 +2,8 @@
 
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
-import { QuizDocument, Question, CefrLevel } from '@shared/types/quiz';
+import { Question, CefrLevel, OptionId, LEVEL_ORDER } from '@shared/types/quiz';
+import type { QuizResponse } from '@shared/types/generation';
 import { useAppStore } from '@shared/store/useAppStore';
 import { useWakeLock } from '@/hooks/useWakeLock';
 import {
@@ -19,6 +20,15 @@ import {
   Loader2,
 } from 'lucide-react';
 
+// Horários vêm da legenda e podem diferir alguns segundos do streaming (US-09): sempre com "≈"
+function approxTime(ms: number): string {
+  const total = Math.floor(ms / 1000);
+  const h = Math.floor(total / 3600);
+  const mm = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+  const ss = String(total % 60).padStart(2, '0');
+  return h ? `≈${h}:${mm}:${ss}` : `≈${mm}:${ss}`;
+}
+
 export default function QuizPlayerPage({
   params,
 }: {
@@ -32,15 +42,15 @@ export default function QuizPlayerPage({
   const { level, setLevel, includeNeighborLevels, ptExplanationDefault, keepScreenAwake, saveAttempt } = useAppStore();
   useWakeLock(keepScreenAwake);
 
-  const [quiz, setQuiz] = useState<QuizDocument | null>(null);
+  const [data, setData] = useState<QuizResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Unlocked segments indices (Set of numbers: 1, 2...)
   const [unlockedSegments, setUnlockedSegments] = useState<Set<number>>(new Set([1]));
 
-  // User answers map: { [questionId]: { selectedIndex: number; isCorrect: boolean } }
-  const [answers, setAnswers] = useState<Record<string, { selectedIndex: number; isCorrect: boolean }>>({});
+  // User answers map: { [questionId]: { selectedId; isCorrect } }
+  const [answers, setAnswers] = useState<Record<string, { selectedId: OptionId; isCorrect: boolean }>>({});
 
   // Language toggle for explanation per question: { [questionId]: 'en' | 'pt' }
   const [explanationLangs, setExplanationLangs] = useState<Record<string, 'en' | 'pt'>>({});
@@ -55,8 +65,7 @@ export default function QuizPlayerPage({
         if (!res.ok) {
           throw new Error('Quiz ainda não foi gerado para este episódio.');
         }
-        const data: QuizDocument = await res.json();
-        setQuiz(data);
+        setData((await res.json()) as QuizResponse);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erro ao carregar o quiz');
       } finally {
@@ -75,7 +84,7 @@ export default function QuizPlayerPage({
     );
   }
 
-  if (error || !quiz) {
+  if (error || !data) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 text-center space-y-4">
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-8 space-y-3">
@@ -91,6 +100,16 @@ export default function QuizPlayerPage({
       </div>
     );
   }
+
+  // O documento guarda as perguntas numa lista e os blocos apontam para elas (§5.5)
+  const quiz = data.quiz;
+  const seriesName = data.episode.seriesName ?? 'Série';
+  const episodeName = data.episode.episodeName ?? `Episódio ${quiz.episodeNumber}`;
+  const questionById = new Map(quiz.questions.map((q) => [q.id, q]));
+  const segments = quiz.segments.map((s) => ({
+    ...s,
+    questions: s.questionIds.map((id) => questionById.get(id)).filter((q): q is Question => q !== undefined),
+  }));
 
   // Filter questions by level
   const allowedLevels = new Set<CefrLevel>([level]);
@@ -108,19 +127,19 @@ export default function QuizPlayerPage({
     }
   }
 
-  const handleSelectOption = (q: Question, optionIndex: number) => {
+  const handleSelectOption = (q: Question, optionId: OptionId) => {
     // If already answered, do not allow changing
     if (answers[q.id]) return;
 
-    const isCorrect = optionIndex === q.correctIndex;
+    const isCorrect = optionId === q.answerId;
     const newAnswers = {
       ...answers,
-      [q.id]: { selectedIndex: optionIndex, isCorrect },
+      [q.id]: { selectedId: optionId, isCorrect },
     };
     setAnswers(newAnswers);
 
     // Check if this was the last question in the quiz
-    const allQuestions = quiz.segments.flatMap((s) => s.questions.filter((item) => allowedLevels.has(item.level)));
+    const allQuestions = segments.flatMap((s) => s.questions.filter((item) => allowedLevels.has(item.level)));
     const totalCount = allQuestions.length;
     const answeredCount = Object.keys(newAnswers).length;
 
@@ -129,11 +148,11 @@ export default function QuizPlayerPage({
       const correctCount = Object.values(newAnswers).filter((a) => a.isCorrect).length;
       saveAttempt({
         episodeKey: quiz.episodeKey,
-        seriesId: quiz.seriesId,
-        seriesTitle: quiz.seriesTitle,
+        seriesId: quiz.tmdbSeriesId,
+        seriesTitle: seriesName,
         seasonNumber: quiz.seasonNumber,
         episodeNumber: quiz.episodeNumber,
-        episodeTitle: quiz.episodeTitle,
+        episodeTitle: episodeName,
         level,
         totalQuestions: totalCount,
         correctAnswers: correctCount,
@@ -175,12 +194,12 @@ export default function QuizPlayerPage({
           className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
-          <span>{quiz.seriesTitle}</span>
+          <span>{seriesName}</span>
         </Link>
 
         {/* Level Selector Pill */}
         <div className="flex items-center gap-1 rounded-xl bg-zinc-900 border border-zinc-800 p-1 text-xs">
-          {(['A2', 'B1', 'B2', 'C1'] as CefrLevel[]).map((lvl) => (
+          {LEVEL_ORDER.map((lvl) => (
             <button
               key={lvl}
               onClick={() => setLevel(lvl)}
@@ -201,7 +220,7 @@ export default function QuizPlayerPage({
         <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-400">
           S{String(quiz.seasonNumber).padStart(2, '0')}E{String(quiz.episodeNumber).padStart(2, '0')}
         </span>
-        <h1 className="text-xl font-bold text-zinc-100 sm:text-2xl">{quiz.episodeTitle}</h1>
+        <h1 className="text-xl font-bold text-zinc-100 sm:text-2xl">{episodeName}</h1>
       </div>
 
       {/* Score Summary Bar */}
@@ -228,7 +247,7 @@ export default function QuizPlayerPage({
 
       {/* Segments Loop */}
       <div className="space-y-6">
-        {quiz.segments.map((segment) => {
+        {segments.map((segment) => {
           const isUnlocked = unlockedSegments.has(segment.index);
           const filteredQuestions = segment.questions.filter((q) => allowedLevels.has(q.level));
 
@@ -298,9 +317,9 @@ export default function QuizPlayerPage({
 
                           {/* Options List */}
                           <div className="space-y-2" lang="en">
-                            {q.options.map((option, optIdx) => {
-                              const isSelected = answer?.selectedIndex === optIdx;
-                              const isCorrectOption = optIdx === q.correctIndex;
+                            {q.options.map((option) => {
+                              const isSelected = answer?.selectedId === option.id;
+                              const isCorrectOption = option.id === q.answerId;
 
                               let btnClasses =
                                 'w-full text-left rounded-xl border p-3 text-xs transition-all flex items-start justify-between gap-3 ';
@@ -322,12 +341,12 @@ export default function QuizPlayerPage({
 
                               return (
                                 <button
-                                  key={optIdx}
-                                  onClick={() => handleSelectOption(q, optIdx)}
+                                  key={option.id}
+                                  onClick={() => handleSelectOption(q, option.id)}
                                   disabled={isAnswered}
                                   className={btnClasses}
                                 >
-                                  <span>{option}</span>
+                                  <span>{option.text}</span>
                                   {isAnswered && isCorrectOption && (
                                     <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0" />
                                   )}
@@ -372,16 +391,16 @@ export default function QuizPlayerPage({
                                 lang={activeLang === 'pt' && q.explanationPt ? 'pt-BR' : 'en'}
                                 className="text-xs text-zinc-300 leading-relaxed"
                               >
-                                {activeLang === 'pt' && q.explanationPt ? q.explanationPt : q.explanation}
+                                {activeLang === 'pt' && q.explanationPt ? q.explanationPt : q.explanationEn}
                               </p>
 
                               {/* Evidence line & quote */}
                               <div className="rounded-lg bg-zinc-900/90 border border-zinc-800/80 px-2.5 py-1.5 text-[11px] text-zinc-400 flex items-center justify-between">
                                 <span className="font-mono text-indigo-400">
-                                  {q.evidence.formattedTime}
+                                  {approxTime(q.evidence.startMs)}
                                 </span>
                                 <span lang="en" className="italic line-clamp-1 max-w-[280px]">
-                                  &ldquo;{q.evidence.text}&rdquo;
+                                  &ldquo;{q.evidence.quote}&rdquo;
                                 </span>
                               </div>
                             </div>
@@ -399,7 +418,7 @@ export default function QuizPlayerPage({
                         className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-semibold text-white shadow-md shadow-indigo-600/20 hover:bg-indigo-500 transition-colors"
                       >
                         <Unlock className="h-4 w-4" />
-                        <span>Já assisti até {segment.formattedEnd} · Liberar próximo bloco</span>
+                        <span>Já assisti até {approxTime(segment.endMs)} · Liberar próximo bloco</span>
                       </button>
                     </div>
                   )}
