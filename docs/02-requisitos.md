@@ -112,7 +112,57 @@ Formato: cada história tem ID, prioridade e critérios de aceite em checklist. 
 ### US-18 Painel de uso (admin) · [MVP+]
 - [ ] `GET /api/admin/stats` mostra gerações, falhas por código, downloads usados/restantes e tokens/US$ do dia e do mês.
 
-## 2.6 Rastreabilidade
+## 2.6 Épico F — Quizzes compartilhados (professor → aluno)
+
+Visão completa, dados, API e telas no item 16. Regra do épico: **nenhuma conta e nenhum dado de professor ou aluno no servidor**; quem só quer responder os quizzes da IA não vê diferença.
+
+### US-19 Montar um quiz para compartilhar · [MVP+]
+**Como** professor, **quero** montar um quiz sobre um episódio **para** passar como tarefa aos meus alunos.
+
+- [ ] "Criar quiz para compartilhar" aparece no quiz da IA e na lista de episódios, para qualquer pessoa.
+- [ ] Com o quiz da IA pronto, o editor mostra o banco multinível com filtros por nível, tipo e bloco; marco as perguntas que quero e reordeno dentro do bloco.
+- [ ] Posso editar enunciado, alternativas, resposta certa e explicações; a pergunta editada ganha o selo "editada pelo professor".
+- [ ] Defino título, instruções, liberação dos blocos (progressiva ou tudo liberado), se a explicação aparece após cada resposta e um nível indicativo (§16.4.2).
+- [ ] O rascunho fica só no aparelho até eu publicar; fechar o app não o perde.
+- [ ] "Ver como aluno" mostra a pré-visualização exatamente como o aluno verá.
+- [ ] O editor avisa: o quiz é visível para quem tiver o link, não devo escrever dados pessoais e o uso é sem fins comerciais.
+
+### US-20 Escrever perguntas próprias · [MVP+]
+- [ ] Tipos: múltipla escolha (2 a 4 alternativas) e verdadeiro ou falso; resposta certa obrigatória.
+- [ ] Cada pergunta própria pede o momento aproximado (`≈mm:ss`), que a põe no bloco certo e na ordem cronológica.
+- [ ] Citação do diálogo opcional, com até 15 palavras; explicações em inglês e em português opcionais.
+- [ ] Funciona também em episódio sem quiz da IA (modo "do zero"), com blocos calculados pela duração da TMDB.
+- [ ] Os limites de §16.4.3 são checados enquanto digito, com mensagem por campo.
+
+### US-21 Publicar e compartilhar por link · [MVP+]
+- [ ] "Publicar" pede o código de acesso se o aparelho ainda não tiver um (decisão A8).
+- [ ] Recebo o link do aluno (`/q/{código}`) com "Copiar" e "Compartilhar", e o link de edição com o aviso "Guarde este link: é o único jeito de editar em outro aparelho".
+- [ ] O servidor não pede nem guarda nome, e-mail, IP ou identificador do aparelho; guarda só o quiz e o hash do link de edição.
+- [ ] Documento inválido volta com a lista de campos a corrigir, e o rascunho não se perde.
+
+### US-22 Responder um quiz compartilhado · [MVP+]
+**Como** aluno, **quero** abrir o link do professor e responder **sem criar conta**.
+
+- [ ] O link abre direto o quiz, sem login, sem código e sem configurar nada; o cabeçalho mostra título, instruções, série e episódio.
+- [ ] A experiência é a mesma do quiz da IA (US-09, US-10): blocos, liberação conforme a escolha do professor, feedback e evidência só depois da resposta; não há seletor de nível.
+- [ ] A tentativa fica no histórico local com o selo "Compartilhado"; nada é enviado ao servidor.
+- [ ] Se o professor publicar uma versão nova no meio da tentativa, termino na versão em que comecei; ao reabrir, vejo o aviso e a opção de recomeçar (§16.11).
+- [ ] Quiz despublicado, apagado ou expirado mostra "Este quiz não está mais disponível".
+
+### US-23 Gerenciar meus quizzes compartilhados · [MVP+]
+- [ ] "Meus quizzes" lista os quizzes publicados neste aparelho, com versão e data de expiração, e destaca os que vencem em até 15 dias.
+- [ ] Ações: editar (publica uma versão nova), renovar por mais 150 dias, despublicar e publicar de novo, gerar novo link de edição e apagar (com confirmação).
+- [ ] Abrir o link de edição em outro aparelho permite editar e acrescenta o quiz à lista daquele aparelho.
+- [ ] Edição simultânea em dois aparelhos não sobrescreve em silêncio: o segundo vê "Este quiz mudou; recarregue".
+- [ ] Exportar o histórico (US-13) só inclui os links de edição se eu marcar essa opção.
+
+### US-24 Enviar o resultado ao professor · [MVP+]
+- [ ] No fim de um quiz compartilhado, "Enviar resultado ao professor" gera um texto com título, código, versão, acertos (total e por bloco) e os números das perguntas erradas (§16.10).
+- [ ] O nome é opcional, digitado na hora e lembrado só no aparelho.
+- [ ] Abre o compartilhamento nativo do celular; sem suporte, copia para a área de transferência.
+- [ ] Nada desse resultado passa pelo servidor.
+
+## 2.7 Rastreabilidade
 
 | História | Fase (item 10) | Endpoint (item 6) | Tela (item 9) |
 |---|---|---|---|
@@ -124,10 +174,13 @@ Formato: cada história tem ID, prioridade e critérios de aceite em checklist. 
 | US-13..15 | Fase 5 | — (local) | Histórico, Configurações |
 | US-16 | Fase 6 | — | Sobre |
 | US-17..18 | Fase 7 | `/api/admin/*` | — |
+| US-19..21 | Fase 8 (quizzes compartilhados) | `POST /api/shared-quizzes` | Editor, Publicado |
+| US-22, US-24 | Fase 8 | `GET /api/shared-quizzes/:shareCode` | Quiz do aluno |
+| US-23 | Fase 8 | `PUT`, `PATCH` e `DELETE /api/shared-quizzes/:shareCode`, `…/renew`, `…/rotate-token` | Meus quizzes, Edição |
 
-Fases (detalhadas no item 10): 0 Fundação · 1 Tracer bullet (série fixa) · 2 Catálogo · 3 Pipeline de legendas robusto · 4 Qualidade do quiz e avaliação · 5 Experiência do quiz · 6 Endurecimento e lançamento · 7 Extras MVP+.
+Fases (detalhadas no item 10): 0 Fundação · 1 Tracer bullet (série fixa) · 2 Catálogo · 3 Pipeline de legendas robusto · 4 Qualidade do quiz e avaliação · 5 Experiência do quiz · 6 Endurecimento e lançamento · 7 Extras MVP+ · 8 Quizzes compartilhados (item 16).
 
-## 2.7 Requisitos não funcionais
+## 2.8 Requisitos não funcionais
 
 | ID | Categoria | Requisito | Como verificar |
 |---|---|---|---|
@@ -137,7 +190,7 @@ Fases (detalhadas no item 10): 0 Fundação · 1 Tracer bullet (série fixa) · 
 | NFR-04 | Custo | Teto de LLM US$ 1/dia (corte automático); ≤ 2 downloads por episódio por 24 h | `usage_daily`, `subtitle_selections` |
 | NFR-05 | Segurança | Nenhum segredo no bundle do front; CSP restritiva; toda entrada validada com Zod | Checagem no build + testes de contrato |
 | NFR-06 | Abuso | Rate limit por IP e por dispositivo; código de acesso para gerar | Testes de contrato |
-| NFR-07 | Privacidade | Nenhuma PII; IP só como hash com sal; logs retidos por ≤ 30 dias | Revisão de código e de logs |
+| NFR-07 | Privacidade | Nenhuma PII; IP só como hash com sal; logs retidos por ≤ 30 dias; quizzes compartilhados sem autor, aluno, IP ou respostas no servidor | Revisão de código e de logs; teste que lista as colunas de `shared_quizzes` |
 | NFR-08 | Conformidade | Texto bruto de legenda nunca persistido nem logado; citações ≤ 15 palavras; dados da TMDB ≤ 6 meses; atribuição presente | Testes automatizados + revisão |
 | NFR-09 | Acessibilidade | WCAG 2.2 AA; alvos de toque ≥ 44 px; `lang="en"` no conteúdo em inglês | axe-core no Playwright |
 | NFR-10 | Compatibilidade | Safari iOS ≥ 16.4, Chrome Android recente, Chrome/Firefox desktop | E2E em WebKit e Chromium |
@@ -146,3 +199,5 @@ Fases (detalhadas no item 10): 0 Fundação · 1 Tracer bullet (série fixa) · 
 | NFR-13 | Manutenibilidade | TypeScript `strict`; contratos em `shared/` (Zod); cobertura do parser ≥ 95% das linhas | CI |
 | NFR-14 | Observabilidade | Logs JSON com `requestId` e `jobId`; tempo por estágio; erro de upstream identificável | Revisão de logs |
 | NFR-15 | Portabilidade | Só um arquivo de adaptação conhece a Vercel; o resto do backend roda em Node puro | Revisão de código |
+| NFR-16 | Segurança | Link de edição com 256 bits aleatórios; o servidor guarda só o SHA-256; o token viaja no fragmento da URL e no cabeçalho `Authorization`, nunca em query string nem em log | Testes de contrato + teste que procura o token nos logs |
+| NFR-17 | Segurança | Texto escrito por professores é exibido só como texto puro (sem HTML, Markdown ou links clicáveis) | Teste de componente com conteúdo malicioso |

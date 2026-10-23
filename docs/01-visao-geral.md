@@ -18,8 +18,9 @@ Um app web de **segunda tela**: você assiste o episódio onde quiser e usa o ce
 2. O app encontra a legenda em inglês na OpenSubtitles, extrai só as falas e pede a uma LLM um banco de perguntas **ancoradas no diálogo**, com evidência (trecho curto + tempo).
 3. As perguntas aparecem **por blocos de ~5 minutos, em ordem cronológica**. O bloco seguinte só abre quando você diz que já assistiu até aquele ponto, então não há spoiler.
 4. Cada resposta tem feedback imediato e explicação (inglês, com opção em português). O histórico fica no aparelho.
+5. Quem ensina pode montar um **quiz compartilhado**: escolhe perguntas do banco da IA, escreve as próprias e manda o link para os alunos, que respondem sem criar conta. O professor também não tem conta: edita por um link secreto, e o servidor não guarda dados de nenhum dos dois (item 16).
 
-O quiz de cada episódio é gerado **uma única vez** e fica em cache para todos os usuários; a legenda em si nunca é armazenada.
+O quiz de cada episódio é gerado **uma única vez** e fica em cache para todos os usuários; a legenda em si nunca é armazenada. Qualquer pessoa continua podendo entrar no site e responder os quizzes da IA sem login.
 
 ## 1.3 Objetivos do MVP
 
@@ -41,6 +42,7 @@ O quiz de cada episódio é gerado **uma única vez** e fica em cache para todos
 - Perguntas sobre o que se vê (roupas, cenário, ações sem fala).
 - Pronúncia, ditado com áudio ou reconhecimento de voz.
 - Garantir qualidade para séries cujo áudio original não é inglês.
+- Contas, turmas, notas ou resultados de alunos guardados no servidor (o quiz compartilhado funciona sem isso; ver §16.13).
 
 ## 1.5 Persona
 
@@ -56,6 +58,17 @@ O quiz de cada episódio é gerado **uma única vez** e fica em cache para todos
 
 **Persona secundária:** amigos convidados (2–5 pessoas) que recebem o link. Sem o código de acesso, só respondem quizzes já gerados.
 
+**Persona do quiz compartilhado: Marina, 38 anos, professora particular de inglês.**
+
+- Dá aulas online para 6 alunos adolescentes e passa episódios de séries como tarefa de casa.
+- Quer escolher as perguntas que fazem sentido para a turma, ajustar o enunciado e acrescentar uma ou duas próprias.
+- Manda tudo pelo WhatsApp; não quer cadastrar alunos nem pedir que criem conta.
+- Os alunos usam celulares variados e muitas vezes abrem o link pela primeira vez no ônibus.
+
+**Job to be done:** "Quando passo um episódio de tarefa, quero mandar um link com as perguntas certas para o nível da turma e receber de volta quanto cada aluno acertou, sem criar conta em mais um sistema."
+
+O **aluno** é um visitante comum: abre o link, responde e, se quiser, envia o resultado à professora pelo mesmo WhatsApp.
+
 ## 1.6 Métricas de sucesso
 
 | Métrica | Definição | Meta | Fonte |
@@ -68,6 +81,7 @@ O quiz de cada episódio é gerado **uma única vez** e fica em cache para todos
 | Nota de qualidade | Rubrica nos 5 episódios de referência (item 11) | média ≥ 4,2/5; 0 erros críticos | script de avaliação |
 | Engajamento | % das perguntas respondidas por quiz iniciado | ≥ 70% | histórico local |
 | Aprendizado | Taxa de acerto por nível em janelas de 2 semanas | tendência de alta | histórico local |
+| Quizzes compartilhados | Publicados por semana e % ainda ativos após 30 dias | acompanhar (sem meta no MVP+) | tabela `shared_quizzes` |
 
 ## 1.7 Escopo
 
@@ -79,7 +93,8 @@ O quiz de cada episódio é gerado **uma única vez** e fica em cache para todos
 | Histórico e configurações locais | Modo "assistir junto" (perguntas liberadas por tempo) | Uso comercial |
 | Modo sem spoiler, dark mode, acessibilidade | PWA instalável | |
 | Atribuição TMDB e página Sobre | Tradução PT-BR de enunciados e alternativas | |
-| [MVP+] Upload manual de legenda, pré-geração em lote, relatório de pergunta com problema, painel de uso | | |
+| [MVP+] Upload manual de legenda, pré-geração em lote, relatório de pergunta com problema, painel de uso | Conta de professor, turmas e painel de resultados (exigem guardar dados de usuário) | Notas ou avaliação formal de alunos |
+| [MVP+] Quizzes compartilhados professor → aluno, sem login (item 16) | | |
 
 ## 1.8 Restrições que moldam o projeto
 

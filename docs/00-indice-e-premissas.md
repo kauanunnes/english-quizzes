@@ -1,6 +1,6 @@
 # Segunda Tela — Documentação técnica e plano de implementação
 
-> **Parte 1 de 5** · itens 0 (este índice), 1, 2, 3 e 4 · pesquisa das APIs feita em **23/10/2026**
+> **Documentação completa** (Partes 1 a 5) · itens 0 (este índice) a 15 · pesquisa das APIs feita em **23/10/2026**
 > Nome provisório do produto: **Segunda Tela** (interface em PT-BR). Código, arquivos e endpoints em inglês.
 
 ---
@@ -21,17 +21,17 @@
 | `docs/02-requisitos.md` | 2. Requisitos funcionais e não funcionais | 1 | ✅ entregue |
 | `docs/03-arquitetura.md` | 3. Arquitetura, diagramas e ADRs | 1 | ✅ entregue |
 | `docs/04-integracoes.md` | 4. TMDB, OpenSubtitles e LLM | 1 | ✅ entregue |
-| `docs/05-modelo-de-dados.md` | 5. Modelo de dados | 2 | ⏳ |
-| `docs/06-contrato-api.md` | 6. Contrato da API do backend | 2 | ⏳ |
-| `docs/07-pipeline-legendas.md` | 7. Pipeline de legendas + casos de teste | 2 | ⏳ |
-| `docs/08-geracao-quiz.md` | 8. Prompt, JSON Schema e exemplos | 3 | ⏳ |
-| `docs/09-ui-ux.md` | 9. Telas, componentes, estados, pastas | 3 | ⏳ |
-| `docs/10-plano-execucao.md` | 10. Fases, tarefas, riscos | 4 | ⏳ |
-| `docs/11-testes-avaliacao.md` | 11. Testes e avaliação do quiz | 4 | ⏳ |
-| `docs/12-seguranca-conformidade.md` | 12. Segurança, privacidade, termos | 5 | ⏳ |
-| `docs/13-setup-deploy.md` | 13. Setup, deploy, custos | 5 | ⏳ |
-| `docs/14-backlog.md` | 14. Backlog pós-MVP | 5 | ⏳ |
-| `docs/15-prompts-por-fase.md` | 15. Prompts prontos por fase | 5 | ⏳ |
+| `docs/05-modelo-de-dados.md` | 5. Modelo de dados | 2 | ✅ entregue |
+| `docs/06-contrato-api.md` | 6. Contrato da API do backend | 2 | ✅ entregue |
+| `docs/07-pipeline-legendas.md` | 7. Pipeline de legendas + casos de teste | 2 | ✅ entregue |
+| `docs/08-geracao-quiz.md` | 8. Prompt, JSON Schema e exemplos | 3 | ✅ entregue |
+| `docs/09-ui-ux.md` | 9. Telas, componentes, estados, pastas | 3 | ✅ entregue |
+| `docs/10-plano-execucao.md` | 10. Fases, tarefas, riscos | 4 | ✅ entregue |
+| `docs/11-testes-avaliacao.md` | 11. Testes e avaliação do quiz | 4 | ✅ entregue |
+| `docs/12-seguranca-conformidade.md` | 12. Segurança, privacidade, termos | 5 | ✅ entregue |
+| `docs/13-setup-deploy.md` | 13. Setup, deploy, custos | 5 | ✅ entregue |
+| `docs/14-backlog.md` | 14. Backlog pós-MVP | 5 | ✅ entregue |
+| `docs/15-prompts-por-fase.md` | 15. Prompts prontos por fase | 5 | ✅ entregue |
 
 ---
 
@@ -149,4 +149,4 @@ O fluxo em uma frase: o usuário escolhe um episódio no catálogo da TMDB; o ba
 
 ---
 
-**Próxima parte (Parte 2):** itens 5 (modelo de dados), 6 (contrato da API) e 7 (pipeline de legendas com casos de teste).
+**Próximos passos:** (1) ler as seções 0.3 a 0.6 e ajustar o que discordar; (2) criar as contas e chaves (§13.3); (3) começar pela Fase 0 colando o prompt de `docs/15-prompts-por-fase.md` §15.1 no assistente de código; (4) antes do lançamento, escrever ao suporte da OpenSubtitles (§12.4).

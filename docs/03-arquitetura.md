@@ -5,7 +5,8 @@
 - **Front-end:** SPA React servida pela CDN da Vercel. Fala só com `/api/*` no mesmo domínio (sem CORS). Imagens vêm direto do CDN da TMDB. Histórico e configurações ficam no `localStorage`.
 - **Backend (BFF):** um único app Hono rodando como Vercel Function (Node.js). Faz proxy da TMDB (com cache na CDN), orquestra a geração (OpenSubtitles → parser → LLM → validação) e guarda quizzes, jobs, contadores e uso no Postgres (Neon).
 - **Geração:** `POST` cria um job e responde `202` na hora; a mesma invocação continua o trabalho em `waitUntil` (até 300 s no plano Hobby). O front consulta o job a cada 2–4 s. A legenda vive só na memória dessa invocação.
-- **Tarefas agendadas:** GitHub Actions chama endpoints de admin uma vez por dia (pré-geração dentro da cota; renovação/limpeza de metadados da TMDB).
+- **Tarefas agendadas:** GitHub Actions chama endpoints de admin uma vez por dia (pré-geração dentro da cota; renovação/limpeza de metadados da TMDB; remoção de quizzes compartilhados expirados).
+- **Quizzes compartilhados ([MVP+], item 16):** documentos montados por professores, guardados no Postgres sem nenhum dado de autor ou aluno. O aluno acessa por link não listado; quem criou edita por um link secreto cujo hash fica no banco (ADR-013). Não envolvem LLM nem OpenSubtitles.
 
 ## 3.2 Diagrama de componentes
 
@@ -21,7 +22,7 @@ flowchart LR
     API["API Hono<br/>Vercel Function Node.js"]
   end
 
-  DB[("Neon Postgres<br/>quizzes, jobs, contadores,<br/>uso, estado da cota")]
+  DB[("Neon Postgres<br/>quizzes, quizzes compartilhados,<br/>jobs, contadores, uso, estado da cota")]
   TMDB["TMDB API v3"]
   IMG["image.tmdb.org"]
   OS["OpenSubtitles REST API"]
@@ -229,6 +230,9 @@ Qualquer estado ativo vira `failed` com `JOB_STALLED` quando o `heartbeat_at` pa
 | `access-code-fail:ip` | 5/h (bloqueio de 1 h) |
 | `read:ip` (catálogo e quiz) | 120/min |
 | `upload:ip` | 5/dia |
+| `share:create:ip` (publicar quiz compartilhado) | 10/dia |
+| `share:write:ip` (editar, renovar, despublicar, apagar) | 60/h |
+| `share-token-fail:ip` (link de edição errado) | 10/h (bloqueio de 1 h) |
 
 | Opção | Prós | Contras |
 |---|---|---|
@@ -288,10 +292,32 @@ Qualquer estado ativo vira `failed` com `JOB_STALLED` quando o `heartbeat_at` pa
 
 ### ADR-011 — Estado local e histórico
 - **Status:** aceito.
-- **Decisão:** Zustand com `persist` no `localStorage`, com `version` e `migrate`. Chaves: `st:settings`, `st:history`, `st:device` (`deviceId` UUID). Até 500 tentativas completas; acima disso, as antigas viram resumo. Exportar/importar em JSON ([MVP+]). Se passar de ~2 MB, migrar para IndexedDB.
+- **Decisão:** Zustand com `persist` no `localStorage`, com `version` e `migrate`. Chaves: `st:settings`, `st:history`, `st:device` (`deviceId` UUID) e, para quizzes compartilhados, `st:shared` (links de edição dos quizzes publicados neste aparelho) e `st:drafts` (rascunhos não publicados) (§16.6.3). Até 500 tentativas completas; acima disso, as antigas viram resumo. Exportar/importar em JSON ([MVP+]). Se passar de ~2 MB, migrar para IndexedDB.
 - **Alternativa:** IndexedDB/Dexie desde já (mais robusto, mais código); histórico no servidor sem login (exigiria identidade de dispositivo no servidor, o que adianta o pós-MVP sem necessidade).
 
 ### ADR-012 — Estratégia de testes
 - **Status:** aceito.
 - **Decisão:** Vitest para unidades (parser primeiro, cobertura ≥ 95%); MSW para testes de contrato com respostas gravadas da TMDB e da OpenSubtitles (só metadados); PGlite para testes de repositório e jobs; Playwright (WebKit + Chromium) com backend simulado para o fluxo principal, mais um smoke test no preview; axe-core para acessibilidade; script de avaliação com 5 episódios de referência e rubrica (item 11).
 - **Regra:** nenhuma legenda real entra no repositório. Fixtures do parser são **sintéticas**, escritas à mão para reproduzir cada problema real. Legendas reais para o eval ficam em pasta local ignorada pelo git, baixadas sob demanda.
+
+### ADR-013 — Quizzes compartilhados sem conta: link do aluno + link de edição secreto
+- **Status:** proposto (Fase 8, [MVP+]). Detalhes no item 16.
+- **Contexto:** um professor quer montar um quiz sobre um episódio e mandar para alunos. Requisitos: alunos sem login; **nenhum dado de usuário guardado por enquanto**, nem do professor; quem só responde os quizzes da IA não pode ser afetado; custo de LLM zero (o quiz reaproveita o banco da IA ou tem perguntas escritas à mão).
+- **Decisão:**
+  1. O quiz publicado vira um documento no Postgres (`shared_quizzes`), identificado por um `shareCode` de 8 caracteres. O link `/q/{shareCode}` é **não listado**: não aparece em busca, mas quem o tem vê o quiz.
+  2. Quem publica recebe um **link de edição** com um `editToken` de 256 bits no fragmento da URL (`#t=…`). O servidor guarda só o SHA-256 do token e compara em tempo constante. O token funciona como uma chave: quem tem o link edita. Não existe conta.
+  3. O aparelho do professor guarda os links de edição (`st:shared`) para listar "Meus quizzes" sem precisar do link.
+  4. O resultado do aluno fica no aparelho dele e só sai se ele o compartilhar (texto via Web Share API). O servidor não recebe respostas.
+  5. Publicar exige o código de acesso (decisão A8); rate limit por IP com hash (ADR-006); o quiz expira 150 dias depois da última renovação (decisão A9 e regra de 6 meses da TMDB, ADR-010).
+
+| Opção | Prós | Contras |
+|---|---|---|
+| **Link do aluno + link de edição secreto (escolhida)** | Zero dado pessoal; nenhum serviço de e-mail; funciona em qualquer aparelho que tenha o link | Perder o link e o aparelho = perder a edição; link vazado = qualquer um edita (mitigado por "gerar novo link de edição") |
+| Login do professor por e-mail (link mágico) | Recupera os quizzes em qualquer aparelho; base para turmas | Guarda e-mail (dado pessoal, LGPD); exige provedor de e-mail; contraria o "sem dados de usuário por enquanto" |
+| Senha ou PIN escolhido pelo professor | Fácil de lembrar | PIN curto cai em força bruta; senha vira uma conta sem recuperação |
+| Dono = `deviceId` do aparelho | Nenhum atrito | Trocar de celular ou limpar o navegador perde a edição para sempre; não dá para editar no computador |
+| Quiz inteiro codificado no link (sem servidor) | Nada armazenado | Links enormes (10 perguntas passam de 2 KB) que quebram no WhatsApp; editar exige mandar outro link; citações circulam sem controle de expiração |
+
+- **Trade-offs:** o link do aluno não é privado (é como um link "qualquer pessoa com o link" de documento); por isso o editor avisa para não escrever dados pessoais. Sem conta não há recuperação; a expiração limpa quizzes órfãos.
+- **Consequências:** nova tabela `shared_quizzes` (sem colunas de identificação, verificado por teste); novos endpoints `/api/shared-quizzes/*`; três buckets novos de rate limit; o cron diário passa a apagar quizzes expirados; o player do quiz vira um componente reutilizado pelo quiz da IA e pelo compartilhado.
+- **Revisitar se:** professores pedirem resultados dos alunos ou acesso em vários aparelhos com frequência (caminho: conta por e-mail no pós-MVP, §16.13), ou se aparecer abuso apesar do código de acesso.
