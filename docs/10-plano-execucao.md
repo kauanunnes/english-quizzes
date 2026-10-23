@@ -33,18 +33,20 @@ F2 pode correr em paralelo à F1; a F5 pode começar com o quiz sintético do se
 **Objetivo:** repositório, ferramentas, CI e deploy vazio funcionando, com contas e chaves prontas.
 **Depende de:** nada.
 
-- [ ] Criar o repositório (privado) e copiar `docs/`; criar `CLAUDE.md` com as regras de §15.0 e o mapa dos documentos.
-- [ ] Vite + React + TypeScript (`strict`), Tailwind CSS v4 com `@tailwindcss/vite`, Biome, aliases `@/`, `@shared/`, `@server/`.
-- [ ] Estrutura de pastas de §9.14 com arquivos placeholder.
-- [ ] `server/lib/env.ts` com Zod e `.env.example` completo (§13.2); a aplicação falha ao subir se faltar variável obrigatória.
-- [ ] Hono com `GET /api/health`; `api/[[...route]].ts`; `scripts/dev-server.ts`; proxy `/api` no Vite; `pnpm dev` sobe os dois.
-- [ ] Drizzle configurado (Neon em dev/prod, PGlite em teste) com uma migração inicial vazia.
-- [ ] Vitest (cobertura) e Playwright instalados, com um teste trivial cada.
-- [ ] `ci.yml` (§13.7): lint, typecheck, testes, build.
+> **Adaptada ao Next.js em 23/10/2026 (ADR-014).** Os itens marcados foram feitos na stack nova; o texto original fica como referência.
+
+- [x] Criar o repositório (privado) e copiar `docs/`; criar `CLAUDE.md` com as regras de §15.0 e o mapa dos documentos. *(regras adaptadas ao Next.js)*
+- [x] Vite + React + TypeScript (`strict`), Tailwind CSS v4 com `@tailwindcss/vite`, Biome, aliases `@/`, `@shared/`, `@server/`. *(Next.js 16 + React 19, Tailwind v4, ESLint no lugar do Biome, mesmos aliases)*
+- [x] Estrutura de pastas de §9.14 com arquivos placeholder. *(estrutura do App Router, ver tabela do ADR-014)*
+- [x] `server/lib/env.ts` com Zod e `.env.example` completo (§13.2); a aplicação falha ao subir se faltar variável obrigatória. *(`src/server/env.ts`, checado em `src/instrumentation.ts`)*
+- [x] Hono com `GET /api/health`; `api/[[...route]].ts`; `scripts/dev-server.ts`; proxy `/api` no Vite; `pnpm dev` sobe os dois. *(route handler `src/app/api/health/route.ts`; um único `pnpm dev`)*
+- [x] Drizzle configurado (Neon em dev/prod, PGlite em teste) com uma migração inicial vazia. *(migração inicial gerada do schema existente; o PGlite aplica as mesmas migrações)*
+- [x] Vitest (cobertura) e Playwright instalados, com um teste trivial cada. *(Playwright: Pixel 7/Chromium e iPhone 14/WebKit)*
+- [x] `ci.yml` (§13.7): lint, typecheck, testes, build. *(também E2E e check-bundle)*
 - [ ] Projeto na Vercel ligado ao GitHub (preview por PR, produção na `main`); Neon via Marketplace da Vercel.
 - [ ] Contas e chaves: TMDB, OpenSubtitles (consumer), Anthropic (com limite de gasto mensal); variáveis cadastradas na Vercel (§13.3).
 
-**Critérios de aceite:** `pnpm check` verde no CI; o preview abre a página "Segunda Tela" e `/api/health` responde 200; `grep` no `dist/` não encontra nenhuma chave.
+**Critérios de aceite:** `pnpm check` verde no CI; o preview abre a página "Segunda Tela" e `/api/health` responde 200; `grep` no `dist/` não encontra nenhuma chave. *(No Next.js, o `check-bundle` roda dentro de `pnpm build` e varre `.next/static` e as respostas pré-renderizadas.)*
 
 ## F1 — Tracer bullet (série fixa) · G
 **Objetivo:** um quiz real gerado ponta a ponta para **um episódio fixo** (sugestão: Victorious S01E01), visível no celular, usando a arquitetura final em versão mínima.

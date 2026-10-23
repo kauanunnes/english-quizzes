@@ -42,7 +42,7 @@ export async function generateQuizForEpisode(options: GenerateQuizOptions): Prom
   } = options;
 
   const episodeKey = `tmdb-${seriesId}-s${String(seasonNumber).padStart(2, '0')}-e${String(episodeNumber).padStart(2, '0')}`;
-  const provider = options.provider || (env.LLM_PROVIDER === 'anthropic' && env.ANTHROPIC_API_KEY ? anthropicProvider : fakeLlmProvider);
+  const provider = options.provider || (env.LLM_PROVIDER === 'anthropic' ? anthropicProvider : fakeLlmProvider);
 
   logger.info('Starting quiz generation for episode', { jobId, episodeKey, segmentsCount: segments.length });
 

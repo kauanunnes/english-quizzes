@@ -1,5 +1,7 @@
 # 3. Arquitetura
 
+> **Stack atual: Next.js 16 (ADR-014).** Onde este documento e os demais falam em Vite, Hono, React Router ou Biome, use a tabela de tradução do ADR-014. Hospedagem, banco, jobs, integrações e as demais decisões continuam como descritas.
+
 ## 3.1 Visão em uma página
 
 - **Front-end:** SPA React servida pela CDN da Vercel. Fala só com `/api/*` no mesmo domínio (sem CORS). Imagens vêm direto do CDN da TMDB. Histórico e configurações ficam no `localStorage`.
@@ -126,18 +128,18 @@ Qualquer estado ativo vira `failed` com `JOB_STALLED` quando o `heartbeat_at` pa
 |---|---|---|
 | Linguagem | TypeScript `strict` no front, no back e nos scripts | Contratos compartilhados; assistentes de código erram menos com tipos |
 | Pacotes | pnpm, um único `package.json` | Sem workspaces para manter |
-| Build | Vite | Padrão de mercado para SPA React; rápido |
-| UI | React + Tailwind CSS v4 | Obrigatórios; v4 usa plugin do Vite e tema em CSS |
-| Rotas | React Router (modo declarativo) | Maduro e simples para ~8 telas |
-| Estado do servidor | TanStack Query | Cache, retry e polling com `refetchInterval` (pausa sozinho em segundo plano) |
+| Framework e build | Next.js 16 (App Router, Turbopack, `cacheComponents`) | ADR-014; substitui o Vite |
+| UI | React 19 + Tailwind CSS v4 | Obrigatórios; v4 com tema em CSS |
+| Rotas | App Router do Next.js | ADR-014; substitui o React Router |
+| Estado do servidor | TanStack Query (previsto na Fase 2; hoje `fetch` direto) | Cache, retry e polling com `refetchInterval` (pausa sozinho em segundo plano) |
 | Estado local | Zustand + `persist` | Histórico e configurações versionados no `localStorage` |
 | Validação | Zod (v4) | DTOs, variáveis de ambiente e schema do quiz; `z.toJSONSchema()` gera o JSON Schema enviado à LLM |
-| Backend | Hono | Roteamento e middlewares leves; roda igual em Vercel, Node e Workers |
+| Backend | Route handlers do Next.js (`src/app/api/**`) + domínio em `src/server/` | ADR-014; substitui o Hono |
 | Banco | Neon Postgres + Drizzle ORM | SQL tipado, migrações; PGlite nos testes |
 | LLM | `@anthropic-ai/sdk` | Saída estruturada, retries e streaming prontos |
 | Testes | Vitest, Testing Library, MSW, PGlite, Playwright, axe-core | ADR-012 |
-| Qualidade | Biome (lint + format) e `tsc --noEmit` | Uma ferramenta, pouca configuração |
-| Runtime | Node.js LTS (22 ou 24) ⚠️ confirmar a versão padrão da Vercel no momento do setup | — |
+| Qualidade | ESLint (`eslint-config-next`) e `tsc --noEmit` | ADR-014; substitui o Biome |
+| Runtime | Node.js 24 LTS (usado no desenvolvimento e no CI) ⚠️ conferir a versão padrão da Vercel no setup | — |
 
 ## 3.6 Orçamento de tempo do job
 
@@ -165,13 +167,13 @@ Qualquer estado ativo vira `failed` com `JOB_STALLED` quando o `heartbeat_at` pa
 - **Trade-offs:** é preciso impedir que o bundle do front importe `server/` (regra de lint + teste no build). Aliases: `@shared/*`, `@server/*`, `@/*` (front).
 
 ### ADR-002 — Front-end
-- **Status:** aceito.
+- **Status:** substituído pelo ADR-014 (Next.js 16) em 23/10/2026.
 - **Decisão:** Vite + React + React Router + TanStack Query + Zustand (`persist`) + Tailwind CSS v4 com dark mode por classe. Componentes próprios e acessíveis; uma biblioteca headless (Radix ou Headless UI) só se surgir diálogo/menu complexo.
 - **Alternativas:** Next.js (SSR e Server Components não trazem ganho para uma segunda tela autenticada por código; mais conceitos); TanStack Router (tipagem melhor, menos familiar); Redux (cerimônia).
 - **Trade-offs:** sem SEO (irrelevante); primeira carga depende do JS, mitigado por bundle pequeno e divisão por rota.
 
 ### ADR-003 — Backend e hospedagem: BFF serverless em Hono na Vercel
-- **Status:** aceito.
+- **Status:** aceito quanto à hospedagem (Vercel Hobby, BFF serverless); a escolha do Hono foi substituída pelo ADR-014 em 23/10/2026.
 - **Contexto:** as credenciais da OpenSubtitles e da LLM não podem ir ao navegador; a geração leva 30–150 s; custo próximo de zero; nenhum servidor para administrar.
 - **Decisão:** um app Hono (`server/app.ts`) exposto como Vercel Function Node.js em `/api/*`, com a SPA no mesmo projeto e domínio. Plano Hobby (gratuito, uso não comercial, coerente com a TMDB gratuita). Só `api/[[...route]].ts` conhece a Vercel (adaptador `hono/vercel` ⚠️ confirmar a forma recomendada no setup); localmente o mesmo app roda com `@hono/node-server`.
 
@@ -321,3 +323,39 @@ Qualquer estado ativo vira `failed` com `JOB_STALLED` quando o `heartbeat_at` pa
 - **Trade-offs:** o link do aluno não é privado (é como um link "qualquer pessoa com o link" de documento); por isso o editor avisa para não escrever dados pessoais. Sem conta não há recuperação; a expiração limpa quizzes órfãos.
 - **Consequências:** nova tabela `shared_quizzes` (sem colunas de identificação, verificado por teste); novos endpoints `/api/shared-quizzes/*`; três buckets novos de rate limit; o cron diário passa a apagar quizzes expirados; o player do quiz vira um componente reutilizado pelo quiz da IA e pelo compartilhado.
 - **Revisitar se:** professores pedirem resultados dos alunos ou acesso em vários aparelhos com frequência (caminho: conta por e-mail no pós-MVP, §16.13), ou se aparecer abuso apesar do código de acesso.
+
+### ADR-014 — Next.js 16 no lugar de Vite + Hono
+- **Status:** aceito (23/10/2026). Substitui o ADR-002 e a parte "Hono" do ADR-003. Hospedagem na Vercel, BFF serverless, Neon, jobs com polling e o restante da arquitetura continuam valendo.
+- **Contexto:** a implementação começou com o pedido de usar "a versão mais atual do Next.js/React". As telas, as rotas da API e o pipeline já existem em Next.js 16 (App Router), e reescrever em Vite + Hono não traz ganho que pague o retrabalho. Os docs, porém, continuavam descrevendo Vite + Hono, e os prompts do item 15 recriariam o projeto na stack antiga.
+- **Decisão:** Next.js 16 com App Router, Turbopack, React 19 e `cacheComponents: true`; telas e API no mesmo app. Os route handlers (`src/app/api/**/route.ts`) são a única camada da API que conhece o Next, no papel que o adaptador tinha no ADR-003; domínio e integrações ficam em `src/server/`, sem imports de `next/*`. O job roda em `after()` (que usa o `waitUntil` da Vercel). ESLint com `eslint-config-next` substitui o Biome. As variáveis de ambiente são checadas em `src/instrumentation.ts` quando o servidor sobe.
+
+**Como ler os outros documentos** (vale para os itens 0–15, inclusive os prompts do item 15):
+
+| Onde os docs dizem | No projeto |
+|---|---|
+| Vite, `vite build`, saída `dist/`, porta 5173 | `next dev` / `next build`, saída `.next/`, porta 3000 |
+| Hono, `server/app.ts`, `api/[[...route]].ts`, `scripts/dev-server.ts`, proxy `/api` | Route handlers em `src/app/api/**/route.ts`; um único `pnpm dev` |
+| `waitUntil` de `@vercel/functions` | `after()` de `next/server` + `export const maxDuration = 300` na rota |
+| React Router, telas em `src/pages/` | App Router: `src/app/**/page.tsx`, `layout.tsx`, `loading.tsx` |
+| Middlewares do Hono (rate limit, `Origin`, código de acesso, admin) | Funções em `src/server/lib/` chamadas pelos route handlers; `proxy.ts` do Next só se algo valer para todas as rotas ⚠️ conferir o guia do Next |
+| Biome (lint + format) | ESLint com `eslint-config-next` (`pnpm lint`) |
+| Variáveis públicas `VITE_*` | `NEXT_PUBLIC_*` (nenhuma secreta); `VITE_SENTRY_DSN` vira `NEXT_PUBLIC_SENTRY_DSN` |
+| Pastas `server/`, `shared/`, `src/` na raiz | `src/server/`, `src/shared/`, `src/app/`, `src/components/`, `src/hooks/` (aliases `@server/*`, `@shared/*`, `@/*`) |
+| `shared/contracts` | `src/shared/types` (Zod) |
+| `server/db/` (`client.ts`, `migrations/`) | `src/server/lib/db/` (`index.ts`, `schema.ts`, `migrations/`) |
+| `server/lib/env.ts` | `src/server/env.ts` + `src/instrumentation.ts` |
+| `vercel.json` com `rewrites` e `functions` | Desnecessários: o Next gera as rotas e a duração vem do `maxDuration` da rota. Cabeçalhos de segurança e CSP (Fase 6) pelo `next.config.ts` ou `vercel.json` ⚠️ conferir o guia de CSP do Next |
+| Vercel: preset Vite, saída `dist` | Preset Next.js, build `pnpm build:vercel` (migrações + build), saída padrão |
+
+| Opção | Prós | Contras |
+|---|---|---|
+| **Manter Next.js 16 (escolhida)** | O código já existe; shell pré-renderizado e streaming; metadata e fontes prontas; um só servidor no desenvolvimento | Mais conceitos (Server/Client Components, Cache Components); lock-in maior que o do Hono |
+| Voltar a Vite + Hono (desenho original) | Segue os docs ao pé da letra; Hono roda também em Workers | Reescrever telas e rotas que já funcionam |
+| Next.js com Hono dentro de um route handler catch-all | Mantém a portabilidade do Hono | Duas camadas de roteamento para ~15 rotas |
+
+- **Consequências:**
+  - Com Cache Components, páginas que leem parâmetros dinâmicos precisam de `loading.tsx` ou `<Suspense>`, e o `usePathname` do layout também. O `<Activity>` preserva o estado das páginas entre navegações (modais precisam se fechar ao esconder a página).
+  - NFR-15 (portabilidade) passa a significar: só `src/app/**` e `src/instrumentation.ts` importam `next/*`; o domínio roda em Node puro e é testado com Vitest.
+  - `GET` de route handler sem dados de requisição é pré-renderizado no build; rotas que precisam rodar a cada chamada (como `/api/health`) usam `connection()`.
+  - A estrutura de pastas do §9.14 vale pela tabela acima.
+- **Revisitar se:** as restrições de Cache Components custarem mais do que entregam (dá para desligar a flag), ou se o limite de 300 s exigir outro host (ADR-003).

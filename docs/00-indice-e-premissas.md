@@ -41,8 +41,8 @@ O fluxo em uma frase: o usuário escolhe um episódio no catálogo da TMDB; o ba
 
 | Tema | Decisão | Onde |
 |---|---|---|
-| Stack | TypeScript estrito; Vite + React + Tailwind CSS v4 + React Router + TanStack Query + Zustand; backend em Hono | ADR-001, ADR-002 |
-| Backend e hospedagem | BFF serverless: funções Node.js na Vercel (plano Hobby, uso não comercial) servindo a SPA e `/api/*` | ADR-003 |
+| Stack | TypeScript estrito; Next.js 16 (App Router, Cache Components) + React 19 + Tailwind CSS v4 + Zustand; API em route handlers do Next (antes: Vite + Hono, ver tabela de tradução do ADR-014) | ADR-001, ADR-014 |
+| Backend e hospedagem | BFF serverless: funções Node.js na Vercel (plano Hobby, uso não comercial) servindo as telas e `/api/*` | ADR-003, ADR-014 |
 | Banco | Neon Postgres (plano Free) + Drizzle ORM | ADR-004 |
 | Geração assíncrona | Job persistido + `waitUntil` + polling do front; nada de fila externa | ADR-005 |
 | Anti-abuso | Código de acesso para gerar + rate limit por IP e dispositivo + tetos diários de gerações e de US$ | ADR-006 |

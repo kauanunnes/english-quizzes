@@ -140,7 +140,7 @@ export class TmdbClient {
   }
 
   async searchSeries(query: string, page = 1): Promise<{ results: SeriesSearchResult[]; totalResults: number; totalPages: number }> {
-    if (!this.readToken) {
+    if (env.MOCK_UPSTREAMS) {
       const q = query.toLowerCase().trim();
       const matched = MOCK_SERIES.filter((s) => s.name.toLowerCase().includes(q) || s.originalName.toLowerCase().includes(q));
       return {
@@ -174,7 +174,7 @@ export class TmdbClient {
   }
 
   async getSeriesDetails(seriesId: number): Promise<SeriesDetails> {
-    if (!this.readToken) {
+    if (env.MOCK_UPSTREAMS) {
       const found = MOCK_SERIES.find((s) => s.id === seriesId);
       if (found) return found;
       return MOCK_SERIES[0];
@@ -191,7 +191,7 @@ export class TmdbClient {
   }
 
   async getSeasonDetails(seriesId: number, seasonNumber: number): Promise<SeasonDetails> {
-    if (!this.readToken) {
+    if (env.MOCK_UPSTREAMS) {
       const key = `${seriesId}-${seasonNumber}`;
       if (MOCK_EPISODES[key]) return MOCK_EPISODES[key];
       return MOCK_EPISODES['31586-1'];
@@ -218,7 +218,7 @@ export class TmdbClient {
     seasonNumber: number,
     episodeNumber: number
   ): Promise<{ name: string; runtime: number; imdbId?: string | null }> {
-    if (!this.readToken) {
+    if (env.MOCK_UPSTREAMS) {
       return {
         name: 'Pilot',
         runtime: 24,

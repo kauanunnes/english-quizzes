@@ -37,6 +37,11 @@ export class OpenSubtitlesClient {
     this.userAgent = env.OPENSUBTITLES_USER_AGENT;
   }
 
+  // OS_MODE=mock (padrão local e no preview, §13.4) não gasta a cota da conta
+  private get useMock(): boolean {
+    return env.MOCK_UPSTREAMS || env.OS_MODE === 'mock';
+  }
+
   private async getAuthToken(): Promise<string | null> {
     if (cachedToken && Date.now() < tokenExpiresAt) {
       return cachedToken;
@@ -91,9 +96,8 @@ export class OpenSubtitlesClient {
   }
 
   async findBestCandidates(params: FindSubtitleParams): Promise<{ candidates: CandidateResult[]; strategy: string }> {
-    // If no API key configured, return mock candidate for dev/test
-    if (!this.apiKey) {
-      logger.info('No OPENSUBTITLES_API_KEY configured, returning synthetic candidate');
+    if (this.useMock) {
+      logger.info('OpenSubtitles in mock mode, returning synthetic candidate');
       return {
         candidates: [
           {
@@ -219,7 +223,7 @@ export class OpenSubtitlesClient {
   }
 
   async downloadSubtitle(fileId: number): Promise<{ content: string; remaining: number }> {
-    if (!this.apiKey) {
+    if (this.useMock) {
       // Return synthetic sample subtitle content in dev/test (with enough lines to satisfy QA)
       const mockLines: string[] = [];
       const characters = ['TORI', 'ANDRE', 'JADE', 'BECK', 'CAT', 'ROBBIE', 'TRINA'];

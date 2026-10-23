@@ -5,6 +5,9 @@ import { eq } from 'drizzle-orm';
 import { runGenerationJob } from '@server/jobs/jobWorker';
 import { isValidAccessCode } from '@server/lib/accessCode';
 
+// O job roda em after() dentro desta invocação: até 300 s no plano Hobby (ADR-003, deadline do job em 240 s)
+export const maxDuration = 300;
+
 interface GenerateQuizBody {
   accessCode?: string;
   uploadedSubtitle?: string;
